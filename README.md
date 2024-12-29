@@ -8,6 +8,6 @@
 
 ### STEP06 - 심화과제
 
-#### [ERD](https://github.com/kergosdyr/hhplus-commerce-java/blob/homework/basic/docs/03_erd.md)
+#### [ERD](https://github.com/kergosdyr/hhplus-commerce-java/blob/homework/advanced/docs/03_erd.md)
 
-#### [API 명세](https://github.com/kergosdyr/hhplus-commerce-java/blob/homework/basic/docs/04_api.md)
+#### [API 명세](https://github.com/kergosdyr/hhplus-commerce-java/blob/homework/advanced/docs/04_api.md)
