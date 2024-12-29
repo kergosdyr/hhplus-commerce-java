@@ -1,13 +1,15 @@
-name: Run JUnit Tests with Docker Compose
+name: Run JUnit Tests for PRs
 
 on:
   pull_request:
-  push:
+    types:
+      - opened    # PR이 열릴 때
+      - synchronize # PR 브랜치에 새로운 커밋이 푸시될 때
+  workflow_dispatch: # 수동 실행 지원 (선택 사항)
 
 permissions:
   checks: write
-  pull-requests: write # only required if `comment: true` was enabled
-
+  pull-requests: write # PR 코멘트를 위한 권한 설정
 
 jobs:
   test:
@@ -18,25 +20,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. Docker Compose 설치
-      - name: Install Docker Compose
-        run: |
-          sudo curl -L "https://github.com/docker/compose/releases/download/v2.23.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-          docker-compose --version
-
-      # 3. Java 설정
+      # 2. Java 설정
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      # 4. Gradle Wrapper 실행 권한 추가
+      # 3. Gradle Wrapper 실행 권한 추가
       - name: Grant execute permission for Gradle wrapper
         run: chmod +x ./gradlew
 
-      # 5. Gradle 종속성 캐싱
+      # 4. Gradle 종속성 캐싱
       - name: Cache Gradle dependencies
         uses: actions/cache@v3
         with:
@@ -45,15 +40,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      # 6. Docker Compose 실행
-      - name: Start Docker Compose
-        run: docker-compose up -d
-
-      # 7. 테스트 실행
+      # 5. 테스트 실행
       - name: Run tests
         run: ./gradlew clean build
 
-      # 8. 테스트 결과 업로드
+      # 6. 테스트 결과 업로드
       - name: Archive test results
         if: always()
         uses: actions/upload-artifact@v3
@@ -61,7 +52,7 @@ jobs:
           name: junit-results
           path: build/test-results/test/
 
-      # 9. 테스트 결과 PR에 코멘트
+      # 7. 테스트 결과 PR에 코멘트
       - name: Comment JUnit results
         uses: mikepenz/action-junit-report@v3
         with:
@@ -69,8 +60,3 @@ jobs:
           check_name: 'JUnit Test Results'
           fail_on_failure: false
           require_tests: true
-
-      # 10. Docker Compose 종료
-      - name: Stop Docker Compose
-        if: always()
-        run: docker-compose down
