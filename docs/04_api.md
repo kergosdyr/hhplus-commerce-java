@@ -20,7 +20,6 @@
 
 #### Description
 - 사용자 잔액을 일정 금액만큼 **충전**합니다.
-- 동시성(다중 충전)을 막기 위해 트랜잭션/락 사용을 고려해야 합니다.
 
 #### Request
 - **URL**: `POST /api/v1/balance/recharge`
@@ -164,7 +163,8 @@
 - **Query Params** (옵션):
     - `page`: number (페이지 번호)
     - `size`: number (페이지 크기)
-    - `searchKeyword`: string (상품명 검색어)
+    - `keyword`: string (상품명 검색어)
+- **Example**: `/api/v1/products?page=1&size=10&keyword=ipad`
 
 #### Response
 
@@ -326,6 +326,7 @@
     - `Authorization: Bearer <JWT-ACCESS-TOKEN>`
 - **Path Variable**:
     - `userId`: number (사용자 ID)
+- **Example**: `/api/v1/coupons/users/123`
 
 #### Response
 
@@ -523,12 +524,13 @@
 - 내부 통계 테이블/캐시/실시간 집계 등은 구현에 따라 자유.
 
 ### Request
-- **URL**: `GET /api/v1/products/top-sellers?days=3`
+- **URL**: `GET /api/v1/products/top-sellers`
 - **Method**: `GET`
 - **Headers**:
     - `Authorization: Bearer <JWT-ACCESS-TOKEN>`
 - **Query Params**:
     - `days`: number (며칠간 판매량 기준, 기본값: 3)
+- **Example**: `/api/v1/products/top-sellers?days=3`
 
 #### Response
 
