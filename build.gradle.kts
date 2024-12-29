@@ -49,4 +49,9 @@ dependencies {
 tasks.withType<Test> {
 	useJUnitPlatform()
 	systemProperty("user.timezone", "UTC")
+	reports {
+		junitXml.required.set(true)
+		html.required.set(false)
+	}
+
 }
