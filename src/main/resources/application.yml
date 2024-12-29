@@ -17,7 +17,9 @@ spring:
     show-sql: false
     hibernate:
       ddl-auto: none
+
     properties:
+      hibernate.dialect: org.hibernate.dialect.MySQLDialect
       hibernate.timezone.default_storage: NORMALIZE_UTC
       hibernate.jdbc.time_zone: UTC
 
