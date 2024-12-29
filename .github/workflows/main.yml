@@ -5,6 +5,10 @@ on:
     types:
       - opened    # PR이 열릴 때
       - synchronize # PR 브랜치에 새로운 커밋이 푸시될 때
+    paths:
+      - 'src/**'         # 코드 파일 변경
+      - '**/build.gradle.kts' # Gradle Kotlin DSL 파일
+      - '.github/workflows/main.yml' # 워크플로 파일 변경
   workflow_dispatch: # 수동 실행 지원 (선택 사항)
 
 permissions:
