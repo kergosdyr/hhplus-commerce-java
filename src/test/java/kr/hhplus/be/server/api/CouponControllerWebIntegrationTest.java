@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import kr.hhplus.be.server.config.WebIntegrationTest;
+import kr.hhplus.be.server.util.MockJwt;
 
 class CouponControllerWebIntegrationTest extends WebIntegrationTest {
 
@@ -25,7 +26,7 @@ class CouponControllerWebIntegrationTest extends WebIntegrationTest {
 								"userId": 1,
 								"couponId": 2
 							}
-						"""))
+						""").header("Authorization", "Bearer " + MockJwt.MOCK.getToken()))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.result").value("SUCCESS"))
 			.andExpect(jsonPath("$.data.userId").value(1))
@@ -40,19 +41,18 @@ class CouponControllerWebIntegrationTest extends WebIntegrationTest {
 	@DisplayName("GET /api/v1/coupons/users/{userId} 로 요청 시 Mocking된 성공 응답을 반환한다")
 	void getUserCoupons() throws Exception {
 
-		mockMvc.perform(get("/api/v1/coupons/users/{userId}", 1))
+		mockMvc.perform(
+				get("/api/v1/coupons/users/{userId}", 1).header("Authorization", "Bearer " + MockJwt.MOCK.getToken()))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.result").value("SUCCESS"))
 			.andExpect(jsonPath("$.data.userId").value(1))
 			.andExpect(jsonPath("$.data.coupons[0].userCouponId").value(111L))
 			.andExpect(jsonPath("$.data.coupons[0].couponName").value("10% Discount"))
-			.andExpect(jsonPath("$.data.coupons[0].discountValue").value(10))
-			.andExpect(jsonPath("$.data.coupons[0].isPercent").value(true))
+			.andExpect(jsonPath("$.data.coupons[0].amount").value(10))
 			.andExpect(jsonPath("$.data.coupons[0].expiredAt").value("2024-01-31T23:59:59"))
 			.andExpect(jsonPath("$.data.coupons[1].userCouponId").value(112L))
 			.andExpect(jsonPath("$.data.coupons[1].couponName").value("3000원 할인 쿠폰"))
-			.andExpect(jsonPath("$.data.coupons[1].discountValue").value(3000))
-			.andExpect(jsonPath("$.data.coupons[1].isPercent").value(false))
+			.andExpect(jsonPath("$.data.coupons[1].amount").value(3000))
 			.andExpect(jsonPath("$.data.coupons[1].expiredAt").value("2024-02-15T23:59:59"));
 
 	}

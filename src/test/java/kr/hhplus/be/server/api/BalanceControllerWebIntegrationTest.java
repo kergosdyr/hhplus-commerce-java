@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import kr.hhplus.be.server.config.WebIntegrationTest;
+import kr.hhplus.be.server.util.MockJwt;
 
 class BalanceControllerWebIntegrationTest extends WebIntegrationTest {
 
@@ -25,7 +26,7 @@ class BalanceControllerWebIntegrationTest extends WebIntegrationTest {
 								"userId": 1,
 								"amount": 10000
 							}
-						"""))
+						""").header("Authorization", "Bearer " + MockJwt.MOCK.getToken()))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.result").value("SUCCESS"))
 			.andExpect(jsonPath("$.data.userId").value(1))
@@ -37,7 +38,7 @@ class BalanceControllerWebIntegrationTest extends WebIntegrationTest {
 	void apiV1GetBalanceUserIdSuccessTest() throws Exception {
 
 		mockMvc.perform(
-				get("/api/v1/balance/{userId}", 1))
+				get("/api/v1/balance/{userId}", 1).header("Authorization", "Bearer " + MockJwt.MOCK.getToken()))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.result").value("SUCCESS"))
 			.andExpect(jsonPath("$.data.userId").value(1))
