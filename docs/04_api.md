@@ -190,16 +190,16 @@
   "data": {
     "items": [
       {
-        "productId": 1,
-        "productName": "Apple iPad",
+        "id": 1,
+        "name": "Apple iPad",
         "price": 500000,
-        "stockQuantity": 100
+        "stock": 100
       },
       {
-        "productId": 2,
-        "productName": "Samsung Galaxy Tab",
+        "id": 2,
+        "name": "Samsung Galaxy Tab",
         "price": 400000,
-        "stockQuantity": 50
+        "stock": 50
       }
     ],
     "pageInfo": {
@@ -368,18 +368,16 @@
         "userCouponId": 111,
         "couponId": 999,
         "couponName": "10% Discount",
-        "discountValue": 10,
-        "isPercent": true,
-        "used": false,
+        "amount": 10,
+        "isUsed": false,
         "expiredAt": "2024-01-31T23:59:59"
       },
       {
         "userCouponId": 112,
         "couponId": 1000,
         "couponName": "3000원 할인 쿠폰",
-        "discountValue": 3000,
-        "isPercent": false,
-        "used": true,
+        "amount": 3000,
+        "isUsed": true,
         "expiredAt": "2024-02-15T23:59:59"
       }
     ]
@@ -430,7 +428,7 @@
 
 ### Request
 
-- **URL**: `POST /api/v1/orders`
+- **URL**: `POST /api/v1/order`
 - **Method**: `POST`
 - **Headers**:
     - `Authorization: Bearer <JWT-ACCESS-TOKEN>`
@@ -471,7 +469,7 @@
     "userId": 123,
     "orderStatus": "PAID",
     "totalAmount": 150000,
-    "discountApplied": 15000,
+    "discountAmount": 15000,
     "paidAmount": 135000,
     "paymentId": 50001,
     "paymentStatus": "SUCCESS",
@@ -479,12 +477,12 @@
       {
         "productId": 1,
         "quantity": 2,
-        "itemPrice": 50000
+        "price": 50000
       },
       {
         "productId": 2,
         "quantity": 3,
-        "itemPrice": 20000
+        "price": 20000
       }
     ],
     "createdAt": "2024-01-01T10:00:00"
@@ -553,7 +551,7 @@
 
 ---
 
-## 5. 인기 상품 조회
+## 5. 상위 상품 조회
 
 ### Description
 
@@ -581,19 +579,19 @@
     "periodDays": 3,
     "topSellers": [
       {
-        "productId": 1,
-        "productName": "Apple iPad",
-        "totalSoldQuantity": 150
+        "id": 1,
+        "name": "Apple iPad",
+        "totalSold": 150
       },
       {
-        "productId": 5,
-        "productName": "MacBook Air",
-        "totalSoldQuantity": 100
+        "id": 5,
+        "name": "MacBook Air",
+        "totalSold": 100
       },
       {
-        "productId": 2,
-        "productName": "Galaxy Tab",
-        "totalSoldQuantity": 80
+        "id": 2,
+        "name": "Galaxy Tab",
+        "totalSold": 80
       }
     ]
   },
