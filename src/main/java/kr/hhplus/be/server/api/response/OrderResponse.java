@@ -4,9 +4,9 @@ import java.util.List;
 
 public record OrderResponse(Long orderId,
 							Long userId,
-							String orderStatus,
+							String status,
 							int totalAmount,
-							int discountApplied,
+							int discountAmount,
 							int paidAmount,
 							Long paymentId,
 							String paymentStatus,
@@ -30,7 +30,7 @@ public record OrderResponse(Long orderId,
 
 	}
 
-	record OrderItemDto(Long productId, int quantity, int itemPrice) {
+	record OrderItemDto(Long productId, int quantity, int price) {
 	}
 
 }

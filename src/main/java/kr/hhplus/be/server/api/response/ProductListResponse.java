@@ -14,7 +14,7 @@ public record ProductListResponse(List<ProductInfo> items, PageInfo pageInfo) {
 		);
 	}
 
-	record ProductInfo(Long productId, String productName, int price, int stockQuantity) {
+	record ProductInfo(long id, String name, int price, int stock) {
 	}
 
 }

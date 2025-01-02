@@ -8,7 +8,7 @@ public record TopSellerResponse(int periodDays, List<TopSellerInfo> topSellers) 
 			new TopSellerInfo(5L, "MacBook Air", 100), new TopSellerInfo(2L, "Galaxy Tab", 80)));
 	}
 
-	record TopSellerInfo(Long productId, String productName, int totalSoldQuantity) {
+	record TopSellerInfo(long id, String name, int totalSold) {
 	}
 }
 
