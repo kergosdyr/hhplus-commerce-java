@@ -13,12 +13,12 @@ public class BalanceModifier {
 	private final BalanceRepository balanceRepository;
 
 
-	public long charge(Long userId, Long amount) {
+	public Balance charge(Long userId, Long amount) {
 		var balance = balanceRepository.findByUserId(userId)
 			.orElseThrow(() -> new ApiException(ErrorType.BALANCE_NOT_FOUND));
 
 		balance.charge(amount);
-		return balance.getAmount();
+		return balance;
 	}
 
 }
