@@ -12,6 +12,7 @@ import kr.hhplus.be.server.api.config.ApiResponse;
 import kr.hhplus.be.server.api.request.BalanceChargeRequest;
 import kr.hhplus.be.server.api.response.BalanceChargeResponse;
 import kr.hhplus.be.server.api.response.BalanceResponse;
+import kr.hhplus.be.server.domain.balanace.Balance;
 import kr.hhplus.be.server.domain.balanace.BalanceService;
 import lombok.RequiredArgsConstructor;
 
@@ -22,11 +23,8 @@ public class BalanceController {
 
 	private final BalanceService balanceService;
 
-
 	@PostMapping("/charge")
-	public ApiResponse<BalanceChargeResponse> charge(
-		@RequestHeader("Authorization") String authHeader,
-		@RequestBody BalanceChargeRequest request) {
+	public ApiResponse<BalanceChargeResponse> charge(@RequestBody BalanceChargeRequest request) {
 
 		var chargedBalance = balanceService.charge(request.userId(), request.amount());
 
@@ -34,9 +32,9 @@ public class BalanceController {
 	}
 
 	@GetMapping("/{userId}")
-	public ApiResponse<BalanceResponse> getBalance(@RequestHeader("Authorization") String authHeader,
-		@PathVariable long userId) {
-		return ApiResponse.success();
+	public ApiResponse<BalanceResponse> getBalance(@PathVariable long userId) {
+		Balance balance = balanceService.get(userId);
+		return ApiResponse.success(BalanceResponse.fromEntity(balance));
 	}
 
 }
