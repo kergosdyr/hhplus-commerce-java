@@ -1,26 +1,15 @@
 package kr.hhplus.be.server.api.config;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import kr.hhplus.be.server.error.ErrorMessage;
 import kr.hhplus.be.server.error.ErrorType;
 import lombok.Getter;
 
-public class ApiResponse<S> {
+public record ApiResponse<S>(@Schema(description = "응답 상태") @Getter ResultType result,
+							 @Schema(description = "응답 데이터") @Getter S data,
+							 @Schema(description = "에러 메세지") ErrorMessage error) {
 
-	@Getter
-	private final ResultType result;
-
-	private final S data;
-
-	@Getter
-	private final ErrorMessage error;
-
-	private ApiResponse(ResultType result, S data, ErrorMessage error) {
-		this.result = result;
-		this.data = data;
-		this.error = error;
-	}
-
-	public static ApiResponse<?> success() {
+	public static <S> ApiResponse<S> success() {
 		return new ApiResponse<>(ResultType.SUCCESS, null, null);
 	}
 
@@ -28,16 +17,11 @@ public class ApiResponse<S> {
 		return new ApiResponse<>(ResultType.SUCCESS, data, null);
 	}
 
-	public static ApiResponse<?> error(ErrorType error) {
+	public static <S> ApiResponse<S> error(ErrorType error) {
 		return new ApiResponse<>(ResultType.ERROR, null, new ErrorMessage(error));
 	}
 
-	public static ApiResponse<?> error(ErrorType error, Object errorData) {
+	public static <S> ApiResponse<S> error(ErrorType error, Object errorData) {
 		return new ApiResponse<>(ResultType.ERROR, null, new ErrorMessage(error, errorData));
 	}
-
-	public Object getData() {
-		return data;
-	}
-
 }
