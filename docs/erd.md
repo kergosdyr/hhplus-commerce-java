@@ -18,16 +18,7 @@ erDiagram
         DATETIME updated_at
     }
 
-    BALANCE_AMOUNT {
-        BIGINT amount_id PK "AUTO_INCREMENT"
-        BIGINT balance_id
-        BIGINT amount
-        DATETIME created_at
-        DATETIME updated_at
-    }
-
     USER ||--|| BALANCE: has
-    BALANCE ||--|| BALANCE_AMOUNT: has
 %% 상품 도메인
     PRODUCT {
         BIGINT product_id PK "AUTO_INCREMENT"
@@ -62,7 +53,8 @@ erDiagram
         BIGINT order_id PK "AUTO_INCREMENT"
         BIGINT user_id
         BIGINT coupon_id "NULLABLE"
-        BIGINT total
+        BIGINT total_price
+        BIGINT coupon_discount_price
         TINYINT(1) is_used_coupon
         VARCHAR(50) status
         DATETIME created_at
@@ -76,7 +68,6 @@ erDiagram
         BIGINT coupon_id PK "AUTO_INCREMENT"
         VARCHAR(255) name
         BIGINT amount
-        BIGINT quantity
         VARCHAR(50) status
         DATETIME expired_at
         DATETIME created_at
@@ -97,7 +88,7 @@ erDiagram
         BIGINT user_coupon_id PK "AUTO_INCREMENT"
         BIGINT user_id
         BIGINT coupon_id
-        DOUBLE amount
+        BIGINT amount
         DATETIME expired_at
         DATETIME created_at
         DATETIME updated_at
@@ -151,7 +142,7 @@ erDiagram
 
 **역할**: 사용자 잔액 관리
 
-- 사용자의 현재 잔액을 관리하며, `BALANCE_AMOUNT`와 연계하여 잔액의 변동을 관리합니다.
+- 사용자의 현재 잔액의 변동을 관리합니다.
 
 **주요 필드**:
 
@@ -161,26 +152,7 @@ erDiagram
 
 **요구사항 대응**:
 
-- `amount` 필드를 통해 현재 잔액을 빠르게 조회할 수 있습니다.
-- 사용자의 잔액의 변동은 `BALANCE_AMOUNT` 테이블을 통해 관리합니다.
-
----
-
-## BALANCE_AMOUNT 테이블
-
-**역할**: 사용자 잔액 관리
-
-- 잔액의 증가(충전), 감소(사용) 등의 변동을 관리합니다.
-
-**주요 필드**:
-
-- **amount_id**: BALANCE_AMOUNT를 고유하게 식별하는 기본 키.
-- **balance_id**: 잔액의 키값으로 BALANCE 를 고유하게 인식하는 키
-- **amount**: 사용자의 현재 잔액. (수정용)
-
-**요구사항 대응**:
-
-- 동시성 제어의 대응을 위해 존재하는 테이블로 수정 시에는 해당 테이블을 사용합니다.
+- `amount` 필드를 통해 잔액을 조회, 수정할 수 있습니다.
 
 ---
 
@@ -239,12 +211,13 @@ erDiagram
 - **user_id**: 해당 쿠폰을 소유한 사용자.
 - **coupon_id**: 쿠폰 정보와 연결.
 - **status**: 쿠폰 상태 정보(USED, NOT_USED).
+- **amount**: 쿠폰의 할인 금액 또는 할인율.
 
 **요구사항 대응**:
 
 - `user_id`와 `coupon_id`를 기반으로 특정 사용자의 쿠폰 보유 및 사용 여부를 확인할 수 있습니다.
 - `expired_at` 을 통해 쿠폰의 발급시점으로부터 유효기간을 관리합니다.
-
+- 쿠폰의 할인율은 발급 이후에 바뀌지 않기 때문에 `amount` 를 사용해서 해당 쿠폰의 할인율(금액)을 즉시 조회할 수 있다. 
 ---
 
 ## ORDER 테이블
@@ -267,6 +240,8 @@ erDiagram
 - `user_id`를 기반으로 특정 사용자의 주문 이력을 조회할 수 있습니다.
 - `is_used_coupon`을 통해 쿠폰 사용 여부를 확인할 수 있습니다.
 - `ORDER_DETAIL` 테이블과 연계하여 해당 주문의 상세 내용을 관리합니다.
+- `total_price` 를 통해 주문의 총 금액을 조회할 수 있습니다.
+- `coupon_discount_price` 를 통해 쿠폰 할인 금액을 조회할 수 있습니다.
 
 ---
 
