@@ -21,7 +21,12 @@ public class BalanceService {
 
 	}
 
-	public long getAmount(long userId) {
-		return balanceLoader.load(userId).getAmount();
+	public Balance get(long userId) {
+
+		userValidator.validate(userId);
+
+		return balanceLoader.load(userId);
+
 	}
+
 }
