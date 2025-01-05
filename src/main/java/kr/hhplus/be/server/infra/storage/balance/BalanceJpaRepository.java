@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.infra.storage.config.balance;
+package kr.hhplus.be.server.infra.storage.balance;
 
 import java.util.Optional;
 
