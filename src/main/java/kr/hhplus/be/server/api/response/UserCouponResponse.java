@@ -1,14 +1,14 @@
 package kr.hhplus.be.server.api.response;
 
-public record UserCouponResponse(Long userCouponId, Long userId, Long couponId,
-								 String issuedAt, String status) {
-	public static UserCouponResponse mock(long userId, long couponId) {
-		return new UserCouponResponse(
-			111L,
-			userId,
-			couponId,
-			"2024-01-01T10:00:00",
-			"ISSUED"
-		);
+import java.time.LocalDateTime;
+
+import kr.hhplus.be.server.domain.coupon.UserCoupon;
+
+public record UserCouponResponse(long userCouponId, long userId, long couponId, LocalDateTime issuedAt, String status) {
+
+	public static UserCouponResponse fromEntity(UserCoupon userCoupon) {
+		return new UserCouponResponse(userCoupon.getUserCouponId(), userCoupon.getUserId(), userCoupon.getCouponId(),
+			userCoupon.getIssuedAt(), userCoupon.getStatus().name());
 	}
+
 }
