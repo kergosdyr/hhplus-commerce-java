@@ -37,7 +37,8 @@ public class ProductController {
 
 	@GetMapping("/top-sellers")
 	public ApiResponse<TopSellerResponse> getTopSellers(
-		@RequestParam(defaultValue = "3") int days) {
+		@RequestParam(defaultValue = "3") int days
+	) {
 		return ApiResponse.success(TopSellerResponse.mock(days));
 	}
 

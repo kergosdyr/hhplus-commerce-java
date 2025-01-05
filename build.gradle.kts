@@ -37,6 +37,12 @@ dependencies {
 	compileOnly("org.projectlombok:lombok:1.18.22")
 	annotationProcessor("org.projectlombok:lombok")
 
+	val querydslVersion = "5.1.0"
+	implementation("com.querydsl:querydsl-jpa:$querydslVersion:jakarta")
+	annotationProcessor("com.querydsl:querydsl-apt:$querydslVersion:jakarta")
+	annotationProcessor("jakarta.annotation:jakarta.annotation-api")
+	annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+
 	//swagger
 	implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.0")
 

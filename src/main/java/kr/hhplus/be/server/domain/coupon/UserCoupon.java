@@ -58,4 +58,11 @@ public class UserCoupon extends BaseEntity {
 	@ManyToOne
 	@JoinColumn(name = "coupon_id", referencedColumnName = "coupon_id", insertable = false, updatable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Coupon coupon;
+
+	public long use(long totalPrice) {
+		this.status = UserCouponStatus.USED;
+		this.isUsed = true;
+		return Math.max(totalPrice - this.amount, 0);
+	}
+
 }

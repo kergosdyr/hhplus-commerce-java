@@ -26,13 +26,14 @@ import lombok.NoArgsConstructor;
 public class Product extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long productId;
+	@Column(name = "product_id")
+	private long productId;
 
 	@Column(nullable = false, length = 255)
 	private String name;
 
 	@Column(nullable = false)
-	private Long price;
+	private long price;
 
 	@Column(nullable = false, length = 50)
 	private String status;

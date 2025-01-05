@@ -10,15 +10,24 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BalanceModifier {
 
-	private final BalanceRepository balanceRepository;
+	private final BalanceLoader balanceLoader;
 
-
-	public Balance charge(Long userId, Long amount) {
-		var balance = balanceRepository.findByUserId(userId)
-			.orElseThrow(() -> new ApiException(ErrorType.BALANCE_NOT_FOUND));
+	public Balance charge(long userId, long amount) {
+		var balance = balanceLoader.load(userId);
 
 		balance.charge(amount);
 		return balance;
 	}
 
+	public Balance use(long userId, long amount) {
+		var balance = balanceLoader.load(userId);
+
+		if (!balance.isUsable(amount)) {
+			throw new ApiException(ErrorType.BALANCE_OVER_USE);
+		}
+
+		balance.use(amount);
+		return balance;
+
+	}
 }

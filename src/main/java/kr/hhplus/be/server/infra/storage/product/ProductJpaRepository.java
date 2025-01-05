@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import kr.hhplus.be.server.domain.product.Product;
 
-public interface ProductJpaRepository extends JpaRepository<Product, Long> {
+public interface ProductJpaRepository extends JpaRepository<Product, Long>, ProductQueryDslRepository {
 
 	@Query("select p from Product p")
 	List<Product> findAllWithoutCount(Pageable pageable);

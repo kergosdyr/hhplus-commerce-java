@@ -1,18 +1,16 @@
 package kr.hhplus.be.server.api.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import kr.hhplus.be.server.error.ApiException;
 import kr.hhplus.be.server.error.ErrorType;
+import lombok.extern.slf4j.Slf4j;
 
 @RestControllerAdvice
+@Slf4j
 public class ApiControllerAdvice {
-
-	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@ExceptionHandler(ApiException.class)
 	public ResponseEntity<ApiResponse<?>> handleCoreApiException(ApiException e) {

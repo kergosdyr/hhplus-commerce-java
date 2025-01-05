@@ -32,4 +32,8 @@ public class ProductFinder {
 
 		return productRepository.countAllByKeyword(keyword);
 	}
+
+	public List<Product> findAllTopSellers(int days) {
+		return productRepository.findAllTopSellers(days);
+	}
 }
