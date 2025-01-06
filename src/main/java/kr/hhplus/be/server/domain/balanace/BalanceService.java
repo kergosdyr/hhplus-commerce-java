@@ -25,7 +25,7 @@ public class BalanceService {
 
 		userValidator.validate(userId);
 
-		return balanceLoader.load(userId);
+		return balanceLoader.loadByUserId(userId);
 
 	}
 

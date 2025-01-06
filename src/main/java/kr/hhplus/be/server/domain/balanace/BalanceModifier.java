@@ -13,14 +13,14 @@ public class BalanceModifier {
 	private final BalanceLoader balanceLoader;
 
 	public Balance charge(long userId, long amount) {
-		var balance = balanceLoader.load(userId);
+		var balance = balanceLoader.loadByUserId(userId);
 
 		balance.charge(amount);
 		return balance;
 	}
 
 	public Balance use(long userId, long amount) {
-		var balance = balanceLoader.load(userId);
+		var balance = balanceLoader.loadByUserId(userId);
 
 		if (!balance.isUsable(amount)) {
 			throw new ApiException(ErrorType.BALANCE_OVER_USE);

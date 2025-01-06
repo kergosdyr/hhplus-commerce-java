@@ -32,7 +32,7 @@ class BalanceModifierTest {
 	void shouldChargeBalance() {
 
 		// given
-		when(balanceLoader.load(1L)).thenReturn(
+		when(balanceLoader.loadByUserId(1L)).thenReturn(
 			createTestBalance()
 		);
 
@@ -49,7 +49,7 @@ class BalanceModifierTest {
 	void shouldUseWhenBalanceExist() {
 
 		//given
-		given(balanceLoader.load(1L)).willReturn(createTestBalance());
+		given(balanceLoader.loadByUserId(1L)).willReturn(createTestBalance());
 
 		//when
 		Balance usedBalance = balanceModifier.use(1L, 1000L);

@@ -33,7 +33,7 @@ class BalanceLoaderTest {
 
 		// when
 		assertThatThrownBy(() -> {
-			balanceLoader.load(1L);
+			balanceLoader.loadByUserId(1L);
 		}).isInstanceOf(ApiException.class).hasMessageContaining("잔액 충전 처리 중 오류가 발생했습니다.");
 
 	}
@@ -50,7 +50,7 @@ class BalanceLoaderTest {
 		given(balanceRepository.findByUserId(1L)).willReturn(Optional.of(givenBalance));
 
 		//when
-		assertThat(balanceLoader.load(1L)).isEqualTo(givenBalance);
+		assertThat(balanceLoader.loadByUserId(1L)).isEqualTo(givenBalance);
 
 	}
 

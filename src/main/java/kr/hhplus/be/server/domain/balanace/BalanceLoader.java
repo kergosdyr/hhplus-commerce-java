@@ -12,7 +12,7 @@ public class BalanceLoader {
 
 	private final BalanceRepository balanceRepository;
 
-	public Balance load(Long userId) {
+	public Balance loadByUserId(Long userId) {
 
 		return balanceRepository.findByUserId(userId)
 			.orElseThrow(() -> new ApiException(ErrorType.BALANCE_NOT_FOUND));

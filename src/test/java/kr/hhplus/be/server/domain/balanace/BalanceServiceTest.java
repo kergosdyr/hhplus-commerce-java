@@ -101,11 +101,11 @@ class BalanceServiceTest {
 			.build();
 
 		doNothing().when(userValidator).validate(userId);
-		given(balanceLoader.load(userId)).willReturn(givenBalance);
+		given(balanceLoader.loadByUserId(userId)).willReturn(givenBalance);
 
 		// when
 		assertThat(balanceService.get(userId)).isEqualTo(givenBalance);
-		verify(balanceLoader, times(1)).load(userId);
+		verify(balanceLoader, times(1)).loadByUserId(userId);
 	}
 
 

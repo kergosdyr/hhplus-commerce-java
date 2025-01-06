@@ -5,6 +5,8 @@ import org.springframework.beans.PropertyEditorRegistrar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import kr.hhplus.be.server.domain.balanace.BalanceLoader;
+import kr.hhplus.be.server.infra.storage.balance.BalanceJpaRepository;
 import kr.hhplus.be.server.infra.storage.coupon.CouponInventoryJpaRepository;
 import kr.hhplus.be.server.infra.storage.coupon.CouponJpaRepository;
 import kr.hhplus.be.server.infra.storage.order.OrderJpaRepository;
@@ -16,6 +18,13 @@ public class IntegrationTest {
 
 	@Autowired
 	protected CouponInventoryJpaRepository couponInventoryJpaRepository;
+
+	@Autowired
+	protected BalanceJpaRepository balanceJpaRepository;
+
+	@Autowired
+	protected BalanceLoader balanceLoader;
+
 
 	@Autowired
 	protected CouponJpaRepository couponJpaRepository;
