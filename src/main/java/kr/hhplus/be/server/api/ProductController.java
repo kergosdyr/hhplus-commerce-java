@@ -11,7 +11,6 @@ import kr.hhplus.be.server.api.config.ApiResponse;
 import kr.hhplus.be.server.api.config.PageInfo;
 import kr.hhplus.be.server.api.response.ProductListResponse;
 import kr.hhplus.be.server.api.response.TopSellerResponse;
-import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductSell;
 import kr.hhplus.be.server.domain.product.ProductService;
@@ -23,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 public class ProductController {
 
 	private final ProductService productService;
-	private final OrderService orderService;
 
 	@GetMapping
 	public ApiResponse<ProductListResponse> getProducts(
