@@ -2,13 +2,29 @@ package kr.hhplus.be.server.api.response;
 
 import java.util.List;
 
+import kr.hhplus.be.server.domain.product.Product;
+import kr.hhplus.be.server.domain.product.ProductSell;
+
 public record TopSellerResponse(int periodDays, List<TopSellerInfo> topSellers) {
-	public static TopSellerResponse mock(int days) {
-		return new TopSellerResponse(days, List.of(new TopSellerInfo(1L, "Apple iPad", 150),
-			new TopSellerInfo(5L, "MacBook Air", 100), new TopSellerInfo(2L, "Galaxy Tab", 80)));
+
+	public static TopSellerResponse fromEntities(int periodDays, List<ProductSell> orderDetailProducts) {
+
+		return new TopSellerResponse(periodDays,
+			orderDetailProducts.stream().map(TopSellerInfo::fromEntity).toList());
+
 	}
 
-	record TopSellerInfo(long id, String name, int totalSold) {
+	record TopSellerInfo(long id, String name, long totalSold) {
+
+		static TopSellerInfo fromEntity(ProductSell productSell) {
+
+			Product product = productSell.product();
+			long totalSold = productSell.sell();
+
+			return new TopSellerInfo(product.getProductId(), product.getName(), totalSold);
+		}
+
+
 	}
 }
 

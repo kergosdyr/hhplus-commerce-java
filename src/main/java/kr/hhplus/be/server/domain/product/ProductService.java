@@ -20,7 +20,7 @@ public class ProductService {
 		return productFinder.findCount(keyword);
 	}
 
-	public List<Product> findAllTopSellers(int days) {
+	public List<ProductSell> findAllTopSellers(int days) {
 		return productFinder.findAllTopSellers(days);
 
 	}

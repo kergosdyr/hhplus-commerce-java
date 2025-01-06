@@ -11,7 +11,9 @@ import kr.hhplus.be.server.api.config.ApiResponse;
 import kr.hhplus.be.server.api.config.PageInfo;
 import kr.hhplus.be.server.api.response.ProductListResponse;
 import kr.hhplus.be.server.api.response.TopSellerResponse;
+import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.product.Product;
+import kr.hhplus.be.server.domain.product.ProductSell;
 import kr.hhplus.be.server.domain.product.ProductService;
 import lombok.RequiredArgsConstructor;
 
@@ -21,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class ProductController {
 
 	private final ProductService productService;
+	private final OrderService orderService;
 
 	@GetMapping
 	public ApiResponse<ProductListResponse> getProducts(
@@ -39,7 +42,8 @@ public class ProductController {
 	public ApiResponse<TopSellerResponse> getTopSellers(
 		@RequestParam(defaultValue = "3") int days
 	) {
-		return ApiResponse.success(TopSellerResponse.mock(days));
+		List<ProductSell> allTopSellers = productService.findAllTopSellers(days);
+		return ApiResponse.success(TopSellerResponse.fromEntities(days, allTopSellers));
 	}
 
 }

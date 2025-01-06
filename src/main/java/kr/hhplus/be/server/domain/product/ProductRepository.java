@@ -14,5 +14,5 @@ public interface ProductRepository {
 
 	long countAllByKeyword(String keyword);
 
-	List<Product> findAllTopSellers(int days);
+	List<ProductSell> findAllTopSellers(int days);
 }

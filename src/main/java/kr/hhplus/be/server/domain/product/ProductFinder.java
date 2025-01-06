@@ -33,7 +33,7 @@ public class ProductFinder {
 		return productRepository.countAllByKeyword(keyword);
 	}
 
-	public List<Product> findAllTopSellers(int days) {
+	public List<ProductSell> findAllTopSellers(int days) {
 		return productRepository.findAllTopSellers(days);
 	}
 }
