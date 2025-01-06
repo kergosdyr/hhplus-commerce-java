@@ -1,17 +1,19 @@
 package kr.hhplus.be.server.config;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.beans.PropertyEditorRegistrar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import kr.hhplus.be.server.domain.balanace.BalanceLoader;
+import kr.hhplus.be.server.domain.balanace.BalanceModifier;
+import kr.hhplus.be.server.domain.balanace.BalanceService;
 import kr.hhplus.be.server.infra.storage.balance.BalanceJpaRepository;
 import kr.hhplus.be.server.infra.storage.coupon.CouponInventoryJpaRepository;
 import kr.hhplus.be.server.infra.storage.coupon.CouponJpaRepository;
 import kr.hhplus.be.server.infra.storage.order.OrderJpaRepository;
 import kr.hhplus.be.server.infra.storage.payment.PaymentJpaRepository;
 import kr.hhplus.be.server.infra.storage.product.ProductJpaRepository;
+import kr.hhplus.be.server.infra.storage.user.UserJpaRepository;
 
 @SpringBootTest
 public class IntegrationTest {
@@ -25,6 +27,14 @@ public class IntegrationTest {
 	@Autowired
 	protected BalanceLoader balanceLoader;
 
+	@Autowired
+	protected BalanceModifier balanceModifier;
+
+	@Autowired
+	protected BalanceService balanceService;
+
+	@Autowired
+	protected UserJpaRepository userJpaRepository;
 
 	@Autowired
 	protected CouponJpaRepository couponJpaRepository;
@@ -43,6 +53,7 @@ public class IntegrationTest {
 		couponInventoryJpaRepository.deleteAllInBatch();
 		couponJpaRepository.deleteAllInBatch();
 		orderJpaRepository.deleteAllInBatch();
+		balanceJpaRepository.deleteAllInBatch();
 		paymentJpaRepository.deleteAllInBatch();
 		productJpaRepository.deleteAllInBatch();
 	}
