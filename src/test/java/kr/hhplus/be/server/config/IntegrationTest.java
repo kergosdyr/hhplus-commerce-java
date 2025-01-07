@@ -7,9 +7,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import kr.hhplus.be.server.domain.balanace.BalanceLoader;
 import kr.hhplus.be.server.domain.balanace.BalanceModifier;
 import kr.hhplus.be.server.domain.balanace.BalanceService;
+import kr.hhplus.be.server.domain.coupon.CouponIssuer;
+import kr.hhplus.be.server.domain.order.OrderGenerator;
+import kr.hhplus.be.server.domain.order.OrderService;
+import kr.hhplus.be.server.domain.payment.PaymentProcessor;
 import kr.hhplus.be.server.infra.storage.balance.BalanceJpaRepository;
 import kr.hhplus.be.server.infra.storage.coupon.CouponInventoryJpaRepository;
 import kr.hhplus.be.server.infra.storage.coupon.CouponJpaRepository;
+import kr.hhplus.be.server.infra.storage.coupon.UserCouponJpaRepository;
+import kr.hhplus.be.server.infra.storage.order.OrderDetailJpaRepository;
 import kr.hhplus.be.server.infra.storage.order.OrderJpaRepository;
 import kr.hhplus.be.server.infra.storage.payment.PaymentJpaRepository;
 import kr.hhplus.be.server.infra.storage.product.ProductJpaRepository;
@@ -28,6 +34,20 @@ public class IntegrationTest {
 	protected BalanceLoader balanceLoader;
 
 	@Autowired
+	protected OrderService orderService;
+
+	@Autowired
+	protected OrderGenerator orderGenerator;
+
+	@Autowired
+	protected OrderDetailJpaRepository orderDetailJpaRepository;
+
+	@Autowired
+	protected PaymentProcessor paymentProcessor;
+
+
+
+	@Autowired
 	protected BalanceModifier balanceModifier;
 
 	@Autowired
@@ -40,6 +60,9 @@ public class IntegrationTest {
 	protected CouponJpaRepository couponJpaRepository;
 
 	@Autowired
+	protected UserCouponJpaRepository userCouponJpaRepository;
+
+	@Autowired
 	protected OrderJpaRepository orderJpaRepository;
 
 	@Autowired
@@ -47,6 +70,9 @@ public class IntegrationTest {
 
 	@Autowired
 	protected ProductJpaRepository productJpaRepository;
+
+	@Autowired
+	protected CouponIssuer couponIssuer;
 
 	@BeforeEach
 	void init() {
@@ -56,5 +82,8 @@ public class IntegrationTest {
 		balanceJpaRepository.deleteAllInBatch();
 		paymentJpaRepository.deleteAllInBatch();
 		productJpaRepository.deleteAllInBatch();
+		orderDetailJpaRepository.deleteAllInBatch();
+		userCouponJpaRepository.deleteAllInBatch();
+		userJpaRepository.deleteAllInBatch();
 	}
 }

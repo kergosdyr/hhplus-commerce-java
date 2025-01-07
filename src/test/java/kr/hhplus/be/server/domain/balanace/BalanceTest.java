@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.balanace;
 
+import static kr.hhplus.be.server.config.TestUtil.createTestBalance;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
@@ -10,12 +11,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class BalanceTest {
 
-	private static Balance createTestBalance() {
-		return Balance.builder()
+	@Test
+	@DisplayName("Balance를 Builder 로 생성할 때 원하는 값이 입력된 대로 생성되어야한다")
+	void shouldBalanceCreatedWithBuilderMustCreatedByInputValue() {
+		//given
+		Balance balance = Balance.builder()
 			.balanceId(1L)
-			.userId(100L)
-			.amount(1000L)
+			.amount(23L)
+			.userId(4L)
 			.build();
+
+		//when & then
+		assertThat(balance)
+			.extracting("balanceId", "amount", "userId")
+			.containsExactly(1L, 23L, 4L);
 	}
 
 	@Test

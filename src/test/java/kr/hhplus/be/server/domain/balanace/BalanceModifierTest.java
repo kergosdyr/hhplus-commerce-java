@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.balanace;
 
+import static kr.hhplus.be.server.config.TestUtil.createTestBalance;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
@@ -19,13 +20,6 @@ class BalanceModifierTest {
 
 	@InjectMocks
 	BalanceModifier balanceModifier;
-
-	private static Balance createTestBalance() {
-		return Balance.builder()
-			.balanceId(1L)
-			.amount(1000L)
-			.build();
-	}
 
 	@Test
 	@DisplayName("잔액이 존재하는 경우에 charge 를 호출한다면 주어진 금액만큼 잔액을 충전한다.")

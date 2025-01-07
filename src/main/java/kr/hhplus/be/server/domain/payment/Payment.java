@@ -44,14 +44,14 @@ public class Payment extends BaseEntity {
 	private long couponId;
 
 	@Column(nullable = false, length = 50)
-	private PaymentStatus status;
+	@Builder.Default
+	private PaymentStatus status = PaymentStatus.PAID;
 
 	@Builder(builderMethodName = "noCouponBuilder")
 	private Payment(long orderId, long userId, long totalPrice) {
 		this.orderId = orderId;
 		this.userId = userId;
 		this.totalPrice = totalPrice;
-		this.status = PaymentStatus.PAID;
 	}
 
 	@Builder(builderMethodName = "withCouponBuilder")
@@ -60,6 +60,5 @@ public class Payment extends BaseEntity {
 		this.userId = userId;
 		this.couponUsedPrice = couponUsedPrice;
 		this.totalPrice = totalPrice;
-		this.status = PaymentStatus.PAID;
 	}
 }
