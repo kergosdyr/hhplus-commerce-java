@@ -35,9 +35,15 @@ public class CouponIssuer {
 				throw new ApiException(ErrorType.COUPON_ALREADY_ISSUED);
 			});
 
-		couponInventoryRepository.findByCouponId(couponId)
-			.orElseThrow(() -> new ApiException(ErrorType.COUPON_NOT_FOUND))
-			.issue();
+		CouponInventory couponInventory = couponInventoryRepository.findByCouponId(couponId)
+			.orElseThrow(() -> new ApiException(ErrorType.COUPON_NOT_FOUND));
+
+		if (!couponInventory.isIssuable()) {
+			throw new ApiException(ErrorType.COUPON_NOT_ISSUABLE);
+		}
+
+		couponInventory.issue();
+
 
 		var userCoupon = UserCoupon.builder()
 			.couponId(coupon.getCouponId())

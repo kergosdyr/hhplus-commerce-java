@@ -48,6 +48,6 @@ public class Coupon extends BaseEntity {
 	private CouponInventory couponInventory;
 
 	public boolean isIssuable(LocalDateTime issuedAt) {
-		return !expiredAt.isBefore(issuedAt) && couponInventory.isIssuable();
+		return !expiredAt.isBefore(issuedAt);
 	}
 }

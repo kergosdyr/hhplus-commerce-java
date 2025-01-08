@@ -102,7 +102,7 @@ class PaymentProcessorIntegrationTest extends IntegrationTest {
 
 		Coupon coupon = createTestCoupon(LocalDateTime.of(2024, 1, 2, 0, 0));
 		Coupon savedCoupon = couponJpaRepository.save(coupon);
-		CouponInventory couponInventory = TestUtil.createTestCouponInventory(savedCoupon.getCouponId());
+		CouponInventory couponInventory = TestUtil.createTestCouponInventory(savedCoupon.getCouponId(), 10L);
 		CouponInventory savedCouponInventory = couponInventoryJpaRepository.save(couponInventory);
 		UserCoupon userCoupon = TestUtil.createTestUserCoupon(savedUser.getUserId(), savedCoupon.getCouponId());
 		UserCoupon savedUserCoupon = userCouponJpaRepository.save(userCoupon);

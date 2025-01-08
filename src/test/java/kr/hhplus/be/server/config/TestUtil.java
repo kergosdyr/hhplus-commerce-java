@@ -34,10 +34,10 @@ public abstract class TestUtil {
 			.build();
 	}
 
-	public static CouponInventory createTestCouponInventory(long couponId) {
+	public static CouponInventory createTestCouponInventory(long couponId, long quantity) {
 		return CouponInventory.builder()
 			.couponId(couponId)
-			.quantity(10L)
+			.quantity(quantity)
 			.build();
 	}
 
