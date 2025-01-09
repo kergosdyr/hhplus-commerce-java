@@ -34,11 +34,24 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
+	implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.10.0")
+	testImplementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.10.0")
+	implementation("org.springframework.retry:spring-retry")
+
 	compileOnly("org.projectlombok:lombok:1.18.22")
 	annotationProcessor("org.projectlombok:lombok")
 
+	val querydslVersion = "5.1.0"
+	implementation("com.querydsl:querydsl-jpa:$querydslVersion:jakarta")
+	annotationProcessor("com.querydsl:querydsl-apt:$querydslVersion:jakarta")
+	annotationProcessor("jakarta.annotation:jakarta.annotation-api")
+	annotationProcessor("jakarta.persistence:jakarta.persistence-api")
 
-    // DB
+	//swagger
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.0")
+
+	// DB
 	runtimeOnly("com.mysql:mysql-connector-j")
 
     // Test

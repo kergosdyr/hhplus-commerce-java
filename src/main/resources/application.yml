@@ -22,7 +22,9 @@ spring:
       hibernate.dialect: org.hibernate.dialect.MySQLDialect
       hibernate.timezone.default_storage: NORMALIZE_UTC
       hibernate.jdbc.time_zone: UTC
-
+decorator:
+  datasource:
+    enabled: true
 ---
 spring.config.activate.on-profile: local, test
 
@@ -31,3 +33,12 @@ spring:
     url: jdbc:mysql://localhost:3306/hhplus?characterEncoding=UTF-8&serverTimezone=UTC
     username: application
     password: application
+  jpa:
+    open-in-view: false
+    generate-ddl: true
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+decorator:
+  datasource:
+    enabled: true
