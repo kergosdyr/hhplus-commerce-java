@@ -21,6 +21,7 @@ public class ProductJpaRepositoryImpl implements ProductQueryDslRepository {
 
 	private final JPAQueryFactory queryFactory;
 
+	//TODO 무분별한 N+1 등 조회 성능 문제가 발생할 수 있으므로, 추후 로직 변경 반드시 필요함, 현재는 요구사항은 성능 문제가 없으므로 제외.
 	@Override
 	public List<ProductSell> findAllTopSellers(int days) {
 

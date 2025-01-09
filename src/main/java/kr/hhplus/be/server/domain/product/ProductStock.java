@@ -22,11 +22,19 @@ import lombok.NoArgsConstructor;
 public class ProductStock extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long stockId;
+	private long stockId;
 
 	@Column(name = "product_id", nullable = false)
-	private Long productId;
+	private long productId;
 
 	@Column(nullable = false)
-	private Long stock;
+	private long stock;
+
+	public boolean isSellable(long quantity) {
+		return stock > 0;
+	}
+
+	public long sell(long quantity) {
+		return stock -= quantity;
+	}
 }
