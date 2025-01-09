@@ -1,6 +1,6 @@
 ## e-커머스 서비스
 
-### STEP05 - 기본과제
+### 문서
 
 #### [마일스톤 - github project roadmap](https://github.com/users/kergosdyr/projects/1)
  
@@ -10,9 +10,10 @@
 
 #### [(추가) 클래스 다이어그램](https://github.com/kergosdyr/hhplus-commerce-java/blob/homework/basic/docs/class.md)
 
+#### [ERD](https://github.com/kergosdyr/hhplus-commerce-java/blob/homework/basic/docs/erd.md)
 
-### STEP06 - 심화과제
+#### [API 명세](https://github.com/kergosdyr/hhplus-commerce-java/blob/homework/basic/docs/api.md)
 
-#### [ERD](https://github.com/kergosdyr/hhplus-commerce-java/blob/homework/advanced/docs/erd.md)
+#### [openapi](https://github.com/kergosdyr/hhplus-commerce-java/blob/main/docs/openapi.yaml)
 
-#### [API 명세](https://github.com/kergosdyr/hhplus-commerce-java/blob/homework/advanced/docs/api.md)
+#### [openapi-capture](https://github.com/kergosdyr/hhplus-commerce-java/blob/main/docs/swagger_capture.png)
