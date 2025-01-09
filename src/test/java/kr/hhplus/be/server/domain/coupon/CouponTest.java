@@ -12,13 +12,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class CouponTest {
 
-	private static Coupon createCoupon(LocalDateTime now, CouponInventory couponInventory, boolean isExpired) {
+	private static Coupon createCoupon(CouponInventory couponInventory, LocalDateTime expiredAt) {
 		return Coupon.builder()
 			.couponId(1L)
 			.name("Test Coupon")
 			.amount(1000L)
 			.status("ACTIVE")
-			.expiredAt(isExpired ? now.minusDays(1) : now.plusDays(1))
+			.expiredAt(expiredAt)
 			.couponInventory(couponInventory)
 			.build();
 	}
@@ -35,51 +35,38 @@ class CouponTest {
 	@DisplayName("만료 시간이 현재보다 이전이라면, isIssuable()는 false를 반환한다.")
 	void shouldReturnFalseWhenExpired() {
 		// given
-		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime issuedAt = LocalDateTime.of(2025, 1, 2, 0, 0, 0, 0);
 
 		CouponInventory couponInventory = createCouponInventory(1L, 10L);
 
-		Coupon coupon = createCoupon(now, couponInventory, true);
+		Coupon coupon = createCoupon(couponInventory, LocalDateTime.of(2024, 12, 30, 0, 0, 0, 0));
 
 		// when
-		boolean result = coupon.isIssuable(now);
+		boolean result = coupon.isIssuable(issuedAt);
 
 		// then
 		assertThat(result).isFalse();
 	}
 
-	@Test
-	@DisplayName("쿠폰 인벤토리 재고가 0이라면, isIssuable()는 false를 반환한다.")
-	void shouldReturnFalseWhenInventoryIsEmpty() {
-		// given
-		LocalDateTime now = LocalDateTime.now();
-
-		CouponInventory couponInventory = createCouponInventory(1L, 0L);
-
-		Coupon coupon = createCoupon(now, couponInventory, false);
-
-		// when
-		boolean result = coupon.isIssuable(now);
-
-		// then
-		assertThat(result).isFalse();
-	}
 
 	@Test
-	@DisplayName("만료 전이고 재고가 1 이상이라면, isIssuable()는 true를 반환한다.")
-	void shouldReturnTrueWhenCouponIsValidAndInventoryAvailable() {
+	@DisplayName("만료 시간이 현재보다 이후이라면, isIssuable()는 true를 반환한다.")
+	void shouldReturnTrueWhenNotExpired() {
 		// given
-		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime issuedAt = LocalDateTime.of(2024, 12, 30, 0, 0, 0, 0);
 
-		CouponInventory couponInventory = createCouponInventory(2L, 5L);
+		CouponInventory couponInventory = createCouponInventory(1L, 10L);
 
-		Coupon coupon = createCoupon(now, couponInventory, false);
+		Coupon coupon = createCoupon(couponInventory, LocalDateTime.of(2024, 12, 31, 0, 0, 0, 0));
 
 		// when
-		boolean result = coupon.isIssuable(now);
+		boolean result = coupon.isIssuable(issuedAt);
 
 		// then
 		assertThat(result).isTrue();
 	}
+
+
+
 
 }

@@ -12,6 +12,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kr.hhplus.be.server.config.ConcurrencyTestUtil;
 import kr.hhplus.be.server.config.IntegrationTest;
 import kr.hhplus.be.server.config.TestUtil;
 import kr.hhplus.be.server.domain.balanace.Balance;
@@ -118,5 +119,40 @@ class PaymentProcessorIntegrationTest extends IntegrationTest {
 		assertThat(modifiedBalance.getAmount()).isEqualTo(1000L);
 
 	}
+
+	@Test
+	@DisplayName("유저의 balance가 15000원이고 15000원 결제를 5번 동시 요청 시도할 경우 1번만 성공해야 한다.")
+	void shouldProcessOnlyFourPaymentsWhen40ConcurrentRequestsAreMade() throws InterruptedException {
+		// given
+		User user = createTestUser();
+		User savedUser = userJpaRepository.save(user);
+
+		Balance balance = getTestBalance(savedUser.getUserId(), 15_000L);
+		Balance savedBalance = balanceJpaRepository.save(balance);
+
+		Order mockOrder = createMockOrder(savedUser.getUserId());
+
+		int numberOfRequests = 5;
+		var run = ConcurrencyTestUtil.run(numberOfRequests, () -> {
+			try {
+				paymentProcessor.process(savedUser.getUserId(), mockOrder);
+				return true;
+			} catch (Exception e) {
+				e.printStackTrace();
+				return false;
+			}
+		});
+
+		assertThat(run.success()).isEqualTo(1);
+		assertThat(run.fail()).isEqualTo(4);
+
+		// 5) DB에 반영된 최종 balance가 0원인지 확인
+		Balance modifiedBalance = balanceJpaRepository
+			.findById(savedBalance.getBalanceId())
+			.orElseThrow(RuntimeException::new);
+
+		assertThat(modifiedBalance.getAmount()).isEqualTo(0L);
+	}
+
 
 }

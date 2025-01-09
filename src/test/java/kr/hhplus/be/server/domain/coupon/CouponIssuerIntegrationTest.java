@@ -94,7 +94,7 @@ class CouponIssuerIntegrationTest extends IntegrationTest {
 
 	@Test
 	@DisplayName("30개의 쿠폰이 존재하고, 40번의 쿠폰 동시 요청이 있을 경우 issue 는 30번만 성공해야한다.")
-	void should30() throws InterruptedException {
+	void shouldIssueOnly30CouponsWhen40ConcurrentRequestsAreMade() throws InterruptedException {
 		//given
 		Coupon coupon = createTestCoupon(LocalDateTime.now().plusDays(1L));
 		Coupon savedCoupon = couponJpaRepository.save(coupon);

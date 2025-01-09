@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.domain.balanace;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import kr.hhplus.be.server.error.ApiException;
 import kr.hhplus.be.server.error.ErrorType;
@@ -12,6 +13,7 @@ public class BalanceModifier {
 
 	private final BalanceLoader balanceLoader;
 
+	@Transactional
 	public Balance charge(long userId, long amount) {
 		var balance = balanceLoader.loadByUserId(userId);
 
@@ -19,6 +21,7 @@ public class BalanceModifier {
 		return balance;
 	}
 
+	@Transactional
 	public Balance use(long userId, long amount) {
 		var balance = balanceLoader.loadByUserId(userId);
 

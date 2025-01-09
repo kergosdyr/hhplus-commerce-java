@@ -13,10 +13,6 @@ import kr.hhplus.be.server.domain.coupon.CouponInventory;
 
 public interface CouponInventoryJpaRepository extends JpaRepository<CouponInventory, Long> {
 
-	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	@Query("select c from CouponInventory c where c.couponId = ?1")
-	@QueryHints({
-		@QueryHint(name = "jakarta.persistence.lock.timeout", value = "1000")
-	})
 	Optional<CouponInventory> findByCouponIdWithLock(long couponId);
 }

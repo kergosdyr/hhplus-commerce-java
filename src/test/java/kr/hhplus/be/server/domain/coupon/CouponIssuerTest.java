@@ -122,13 +122,14 @@ class CouponIssuerTest {
 		// given
 		long userId = 1L;
 		long couponId = 5L;
-		LocalDateTime issuedAt = LocalDateTime.now();
+		LocalDateTime issuedAt = LocalDateTime.of(2024, 12, 31, 0, 0, 0);
 
 		// Coupon mock
 		when(mockCoupon.isIssuable(issuedAt)).thenReturn(true);
 		when(mockCoupon.getCouponId()).thenReturn(couponId);
 		when(mockCoupon.getAmount()).thenReturn(1000L);
 		when(mockCoupon.getExpiredAt()).thenReturn(LocalDateTime.now().plusDays(7));
+		when(mockInventory.isIssuable()).thenReturn(true);
 
 		when(couponRepository.findById(couponId)).thenReturn(Optional.of(mockCoupon));
 
