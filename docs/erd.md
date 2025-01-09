@@ -53,9 +53,6 @@ erDiagram
         BIGINT order_id PK "AUTO_INCREMENT"
         BIGINT user_id
         BIGINT coupon_id "NULLABLE"
-        BIGINT total_price
-        BIGINT coupon_discount_price
-        TINYINT(1) is_used_coupon
         VARCHAR(50) status
         DATETIME created_at
         DATETIME updated_at
@@ -102,7 +99,9 @@ erDiagram
         BIGINT payment_id PK "AUTO_INCREMENT"
         BIGINT order_id
         BIGINT user_id
-        DOUBLE amount
+        BIGINT total_price
+        BIGINT coupon_discount_price
+        TINYINT(1) is_used_coupon
         VARCHAR(50) status
         DATETIME created_at
         DATETIME updated_at
