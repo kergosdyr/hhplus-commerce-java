@@ -204,7 +204,7 @@
     ],
     "pageInfo": {
       "currentPage": 1,
-      "totalPages": 5,
+      "size": 10,
       "totalItems": 10
     }
   },
