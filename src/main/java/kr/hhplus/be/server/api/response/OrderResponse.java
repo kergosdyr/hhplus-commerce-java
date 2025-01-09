@@ -1,36 +1,49 @@
 package kr.hhplus.be.server.api.response;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-public record OrderResponse(Long orderId,
-							Long userId,
+import kr.hhplus.be.server.domain.order.Order;
+import kr.hhplus.be.server.domain.order.OrderDetail;
+import kr.hhplus.be.server.domain.order.OrderPayment;
+import kr.hhplus.be.server.domain.payment.Payment;
+
+public record OrderResponse(long orderId,
+							long userId,
 							String status,
-							int totalAmount,
-							int discountAmount,
-							int paidAmount,
-							Long paymentId,
+							long totalAmount,
+							long discountAmount,
+							long paidAmount,
+							long paymentId,
 							String paymentStatus,
-							List<OrderItemDto> orderItems,
-							String createdAt) {
+							List<OrderItem> orderItems,
+							LocalDateTime createdAt) {
 
-	public static OrderResponse mock(long userId) {
+	public static OrderResponse fromEntity(OrderPayment orderPayment) {
 
+		Order order = orderPayment.order();
+		Payment payment = orderPayment.payment();
 		return new OrderResponse(
-			20240001L,
-			userId,
-			"PAID",
-			150000,
-			15000,
-			135000,
-			50001L,
-			"SUCCESS",
-			List.of(new OrderItemDto(1L, 2, 50000), new OrderItemDto(2L, 3, 20000)),
-			"2024-01-01T10:00:00"
+			order.getOrderId(),
+			order.getUserId(),
+			order.getStatus().name(),
+			order.getTotal(),
+			order.getTotalPrice() - payment.getTotalPrice(),
+			payment.getTotalPrice(),
+			payment.getPaymentId(),
+			payment.getStatus().name(),
+			order.getOrderDetails().stream().map(OrderItem::fromOrderDetails).toList(),
+			order.getCreatedAt()
 		);
 
 	}
 
-	record OrderItemDto(Long productId, int quantity, int price) {
+	record OrderItem(long productId, long quantity, long price) {
+		public static OrderItem fromOrderDetails(OrderDetail orderDetail) {
+			return new OrderItem(orderDetail.getProductId(), orderDetail.getQuantity(),
+				orderDetail.getProduct().getPrice());
+		}
+
 	}
 
 }

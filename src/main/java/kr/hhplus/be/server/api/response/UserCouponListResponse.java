@@ -1,18 +1,30 @@
 package kr.hhplus.be.server.api.response;
 
+import java.time.LocalDateTime;
 import java.util.List;
+
+import kr.hhplus.be.server.domain.coupon.Coupon;
+import kr.hhplus.be.server.domain.coupon.UserCoupon;
 
 public record UserCouponListResponse(long userId, List<UserCouponInfo> coupons) {
 
-	public static UserCouponListResponse mock(long userId) {
-		return new UserCouponListResponse(1L, List.of(
-			new UserCouponInfo(111L, 999L, "10% Discount", 10, true, "2024-01-31T23:59:59"),
-			new UserCouponInfo(112L, 1000L, "3000원 할인 쿠폰", 3000, false, "2024-02-15T23:59:59")));
+	public static UserCouponListResponse fromEntities(long userId, List<UserCoupon> userCoupons) {
+
+		return new UserCouponListResponse(userId, userCoupons.stream().map(UserCouponInfo::fromEntity).toList());
+
 	}
 
+
 	public record UserCouponInfo(long userCouponId, long couponId, String couponName,
-								 int amount, boolean isUsed,
-								 String expiredAt) {
+								 long amount, boolean isUsed,
+								 LocalDateTime expiredAt) {
+
+		public static UserCouponInfo fromEntity(UserCoupon userCoupon) {
+			Coupon coupon = userCoupon.getCoupon();
+			return new UserCouponInfo(userCoupon.getUserCouponId(), userCoupon.getCouponId(), coupon.getName(),
+				coupon.getAmount(), userCoupon.isUsed(), userCoupon.getExpiredAt());
+
+		}
 	}
 
 }
