@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.domain.balanace;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import kr.hhplus.be.server.error.ApiException;
 import kr.hhplus.be.server.error.ErrorType;
@@ -12,7 +13,8 @@ public class BalanceLoader {
 
 	private final BalanceRepository balanceRepository;
 
-	public Balance load(Long userId) {
+	@Transactional
+	public Balance loadByUserId(Long userId) {
 
 		return balanceRepository.findByUserId(userId)
 			.orElseThrow(() -> new ApiException(ErrorType.BALANCE_NOT_FOUND));
