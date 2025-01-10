@@ -3,10 +3,9 @@ package kr.hhplus.be.server.domain.balanace;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kr.hhplus.be.server.domain.user.UserValidator;
+import kr.hhplus.be.server.domain.user.UserFinder;
 import kr.hhplus.be.server.error.ApiException;
 import kr.hhplus.be.server.error.ErrorType;
 
@@ -23,13 +22,13 @@ import kr.hhplus.be.server.error.ErrorType;
 class BalanceServiceTest {
 
 	@Mock
-	UserValidator userValidator;
+	UserFinder userFinder;
 
 	@Mock
 	BalanceModifier balanceModifier;
 
 	@Mock
-	BalanceLoader balanceLoader;
+	BalanceFinder balanceFinder;
 
 	@InjectMocks
 	BalanceService balanceService;
@@ -42,7 +41,8 @@ class BalanceServiceTest {
 		long userId = 1L;
 		long amount = 1000L;
 
-		doThrow(new ApiException(ErrorType.USER_NOT_FOUND)).when(userValidator).validate(userId);
+		when(userFinder.notExistsByUserId(userId)).thenReturn(true);
+
 
 		// when
 		assertThatThrownBy(() -> balanceService.charge(userId, amount))
@@ -64,7 +64,8 @@ class BalanceServiceTest {
 			.amount(1000L)
 			.build();
 
-		doNothing().when(userValidator).validate(userId);
+		when(userFinder.notExistsByUserId(userId)).thenReturn(false);
+
 		given(balanceModifier.charge(userId, amount)).willReturn(givenBalance);
 
 		//when
@@ -80,7 +81,7 @@ class BalanceServiceTest {
 		// given
 		long userId = 1L;
 
-		doThrow(new ApiException(ErrorType.USER_NOT_FOUND)).when(userValidator).validate(userId);
+		when(userFinder.notExistsByUserId(userId)).thenReturn(true);
 
 		// when
 		assertThatThrownBy(() -> balanceService.get(userId))
@@ -100,12 +101,13 @@ class BalanceServiceTest {
 			.amount(1000L)
 			.build();
 
-		doNothing().when(userValidator).validate(userId);
-		given(balanceLoader.loadByUserId(userId)).willReturn(givenBalance);
+		when(userFinder.notExistsByUserId(userId)).thenReturn(false);
+
+		given(balanceFinder.findByUserId(userId)).willReturn(givenBalance);
 
 		// when
 		assertThat(balanceService.get(userId)).isEqualTo(givenBalance);
-		verify(balanceLoader, times(1)).loadByUserId(userId);
+		verify(balanceFinder, times(1)).findByUserId(userId);
 	}
 
 

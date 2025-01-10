@@ -8,7 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import kr.hhplus.be.server.domain.payment.Payment;
 import kr.hhplus.be.server.domain.payment.PaymentProcessor;
 import kr.hhplus.be.server.domain.product.ProductStockModifier;
-import kr.hhplus.be.server.domain.user.UserValidator;
+import kr.hhplus.be.server.domain.user.UserFinder;
+import kr.hhplus.be.server.error.ApiException;
+import kr.hhplus.be.server.error.ErrorType;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -17,7 +19,7 @@ public class OrderService {
 
 	private final OrderGenerator orderGenerator;
 
-	private final UserValidator userValidator;
+	private final UserFinder userFinder;
 
 	private final PaymentProcessor paymentProcessor;
 
@@ -26,7 +28,9 @@ public class OrderService {
 	@Transactional
 	public OrderPayment order(long userId, List<OrderProduct> orderProducts) {
 
-		userValidator.validate(userId);
+		if (userFinder.notExistsByUserId(userId)) {
+			throw new ApiException(ErrorType.USER_NOT_FOUND);
+		}
 
 		Order order = orderGenerator.generate(userId, orderProducts);
 		productStockModifier.sell(orderProducts);
@@ -39,7 +43,9 @@ public class OrderService {
 	@Transactional
 	public OrderPayment orderWithCoupon(long userId, long couponId, List<OrderProduct> orderProducts) {
 
-		userValidator.validate(userId);
+		if (userFinder.notExistsByUserId(userId)) {
+			throw new ApiException(ErrorType.USER_NOT_FOUND);
+		}
 
 		Order order = orderGenerator.generate(userId, orderProducts);
 		productStockModifier.sell(orderProducts);

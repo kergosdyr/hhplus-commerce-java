@@ -9,12 +9,12 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class BalanceLoader {
+public class BalanceFinder {
 
 	private final BalanceRepository balanceRepository;
 
 	@Transactional
-	public Balance loadByUserId(Long userId) {
+	public Balance findByUserId(Long userId) {
 
 		return balanceRepository.findByUserId(userId)
 			.orElseThrow(() -> new ApiException(ErrorType.BALANCE_NOT_FOUND));

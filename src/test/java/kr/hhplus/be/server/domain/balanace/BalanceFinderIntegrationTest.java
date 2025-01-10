@@ -9,11 +9,11 @@ import org.junit.jupiter.api.Test;
 import kr.hhplus.be.server.config.IntegrationTest;
 import kr.hhplus.be.server.error.ApiException;
 
-class BalanceLoaderIntegrationTest extends IntegrationTest {
+class BalanceFinderIntegrationTest extends IntegrationTest {
 
 	@Test
 	@DisplayName("load 를 호출하는 경우 해당하는 userId 의 balance 값을 가져온다")
-	void shouldFindBalanceWhenCalledLoadByUserIdWithId() {
+	void shouldFindBalanceWhenCalledFindByUserIdWithId() {
 
 		//given
 		Balance savedBalance = balanceJpaRepository.save(Balance.builder()
@@ -22,7 +22,7 @@ class BalanceLoaderIntegrationTest extends IntegrationTest {
 			.build());
 
 		//when
-		Balance loadedBalance = balanceLoader.loadByUserId(savedBalance.getUserId());
+		Balance loadedBalance = balanceFinder.findByUserId(savedBalance.getUserId());
 
 		assertThat(loadedBalance.getBalanceId()).isEqualTo(savedBalance.getBalanceId());
 		assertThat(loadedBalance.getAmount()).isEqualTo(savedBalance.getAmount());
@@ -32,7 +32,7 @@ class BalanceLoaderIntegrationTest extends IntegrationTest {
 
 	@Test
 	@DisplayName("load 호출 시 해당하는 userId 의 balance 값이 없다면 ApiExcepction(ErroType BALANCE_NOT_FOUND) 를 발생시킨다.")
-	void shouldThrowExceptionWhenLoadByUserIdNotFound() {
+	void shouldThrowExceptionWhenFindByUserIdNotFound() {
 
 		//given
 		Balance savedBalance = balanceJpaRepository.save(Balance.builder()
@@ -42,7 +42,7 @@ class BalanceLoaderIntegrationTest extends IntegrationTest {
 
 		//when
 
-		assertThatThrownBy(() -> balanceLoader.loadByUserId(savedBalance.getUserId() + 2L)).isInstanceOf(
+		assertThatThrownBy(() -> balanceFinder.findByUserId(savedBalance.getUserId() + 2L)).isInstanceOf(
 			ApiException.class).hasMessageContaining("잔액 충전 처리 중 오류가 발생했습니다.");
 
 	}

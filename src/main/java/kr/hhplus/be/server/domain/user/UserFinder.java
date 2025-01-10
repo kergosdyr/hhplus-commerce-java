@@ -10,14 +10,15 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class UserValidator {
+public class UserFinder {
 
 	private final UserRepository userRepository;
 
-	public void validate(long userId) {
-
-		userRepository.findById(userId).orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
-
+	public User findByUserId(long userId) {
+		return userRepository.findById(userId).orElseThrow(() -> new ApiException(ErrorType.USER_NOT_FOUND));
 	}
 
+	public boolean notExistsByUserId(long userId) {
+		return !userRepository.existsById(userId);
+	}
 }

@@ -11,11 +11,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BalanceModifier {
 
-	private final BalanceLoader balanceLoader;
+	private final BalanceFinder balanceFinder;
 
 	@Transactional
 	public Balance charge(long userId, long amount) {
-		var balance = balanceLoader.loadByUserId(userId);
+		var balance = balanceFinder.findByUserId(userId);
 
 		balance.charge(amount);
 		return balance;
@@ -23,7 +23,7 @@ public class BalanceModifier {
 
 	@Transactional
 	public Balance use(long userId, long amount) {
-		var balance = balanceLoader.loadByUserId(userId);
+		var balance = balanceFinder.findByUserId(userId);
 
 		if (!balance.isUsable(amount)) {
 			throw new ApiException(ErrorType.BALANCE_OVER_USE);

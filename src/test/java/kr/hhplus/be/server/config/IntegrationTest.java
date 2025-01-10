@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import kr.hhplus.be.server.domain.balanace.BalanceLoader;
+import kr.hhplus.be.server.domain.balanace.BalanceFinder;
 import kr.hhplus.be.server.domain.balanace.BalanceModifier;
 import kr.hhplus.be.server.domain.balanace.BalanceService;
 import kr.hhplus.be.server.domain.coupon.CouponIssuer;
@@ -31,7 +31,7 @@ public class IntegrationTest {
 	protected BalanceJpaRepository balanceJpaRepository;
 
 	@Autowired
-	protected BalanceLoader balanceLoader;
+	protected BalanceFinder balanceFinder;
 
 	@Autowired
 	protected OrderService orderService;

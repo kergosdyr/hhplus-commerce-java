@@ -2,7 +2,9 @@ package kr.hhplus.be.server.domain.balanace;
 
 import org.springframework.stereotype.Service;
 
-import kr.hhplus.be.server.domain.user.UserValidator;
+import kr.hhplus.be.server.domain.user.UserFinder;
+import kr.hhplus.be.server.error.ApiException;
+import kr.hhplus.be.server.error.ErrorType;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -10,12 +12,14 @@ import lombok.RequiredArgsConstructor;
 public class BalanceService {
 
 	private final BalanceModifier balanceModifier;
-	private final BalanceLoader balanceLoader;
-	private final UserValidator userValidator;
+	private final BalanceFinder balanceFinder;
+	private final UserFinder userFinder;
 
 	public Balance charge(long userId, Long amount) {
 
-		userValidator.validate(userId);
+		if (userFinder.notExistsByUserId(userId)) {
+			throw new ApiException(ErrorType.USER_NOT_FOUND);
+		}
 
 		return balanceModifier.charge(userId, amount);
 
@@ -23,9 +27,11 @@ public class BalanceService {
 
 	public Balance get(long userId) {
 
-		userValidator.validate(userId);
+		if (userFinder.notExistsByUserId(userId)) {
+			throw new ApiException(ErrorType.USER_NOT_FOUND);
+		}
 
-		return balanceLoader.loadByUserId(userId);
+		return balanceFinder.findByUserId(userId);
 
 	}
 
