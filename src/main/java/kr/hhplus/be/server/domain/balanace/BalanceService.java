@@ -2,26 +2,31 @@ package kr.hhplus.be.server.domain.balanace;
 
 import org.springframework.stereotype.Service;
 
-import kr.hhplus.be.server.domain.user.UserLoader;
+import kr.hhplus.be.server.domain.user.UserValidator;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class BalanceService {
 
-	private final UserLoader userLoader;
 	private final BalanceModifier balanceModifier;
 	private final BalanceLoader balanceLoader;
+	private final UserValidator userValidator;
 
-	public long charge(long userId, Long amount) {
+	public Balance charge(long userId, Long amount) {
 
-		var user = userLoader.load(userId);
+		userValidator.validate(userId);
 
-		return balanceModifier.charge(user.getUserId(), amount);
+		return balanceModifier.charge(userId, amount);
 
 	}
 
-	public long getBalanceAmount(long userId) {
-		return balanceLoader.load(userId).getAmount();
+	public Balance get(long userId) {
+
+		userValidator.validate(userId);
+
+		return balanceLoader.loadByUserId(userId);
+
 	}
+
 }

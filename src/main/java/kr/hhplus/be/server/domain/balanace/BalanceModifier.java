@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.domain.balanace;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import kr.hhplus.be.server.error.ApiException;
 import kr.hhplus.be.server.error.ErrorType;
@@ -10,20 +11,26 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BalanceModifier {
 
-	private final BalanceRepository balanceRepository;
+	private final BalanceLoader balanceLoader;
 
-	private final BalanceAmountRepository balanceAmountRepository;
+	@Transactional
+	public Balance charge(long userId, long amount) {
+		var balance = balanceLoader.loadByUserId(userId);
 
-	public long charge(Long userId, Long amount) {
-		var balance = balanceRepository.findByUserId(userId)
-			.orElseThrow(() -> new ApiException(ErrorType.BALANCE_NOT_FOUND));
-
-		var balanceAmount = balanceAmountRepository.findByUserIdAndBalanceIdWithLock(userId, balance.getBalanceId())
-			.orElseThrow(() -> new ApiException(ErrorType.BALANCE_NOT_FOUND));
-
-		balanceAmount.charge(amount);
 		balance.charge(amount);
-		return balance.getAmount();
+		return balance;
 	}
 
+	@Transactional
+	public Balance use(long userId, long amount) {
+		var balance = balanceLoader.loadByUserId(userId);
+
+		if (!balance.isUsable(amount)) {
+			throw new ApiException(ErrorType.BALANCE_OVER_USE);
+		}
+
+		balance.use(amount);
+		return balance;
+
+	}
 }

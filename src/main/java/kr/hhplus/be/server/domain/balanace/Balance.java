@@ -33,4 +33,12 @@ public class Balance extends BaseEntity {
 	public void charge(Long amount) {
 		this.amount += amount;
 	}
+
+	public boolean isUsable(long amount) {
+		return this.amount - amount >= 0;
+	}
+
+	public void use(long amount) {
+		this.amount -= amount;
+	}
 }
