@@ -44,7 +44,14 @@ public class OrderController {
 		)
 		@Valid @RequestBody OrderRequest request
 	) {
+		if (request.isWithCoupon()) {
+			OrderPayment orderPayment = orderService.orderWithCoupon(request.userId(), request.couponId(),
+				request.toOrderProducts());
+			return WebApiResponse.success(OrderResponse.fromEntity(orderPayment));
+		}
+
 		OrderPayment orderPayment = orderService.order(request.userId(), request.toOrderProducts());
 		return WebApiResponse.success(OrderResponse.fromEntity(orderPayment));
+
 	}
 }

@@ -13,9 +13,9 @@ public record OrderRequest(
 	@Min(value = 1, message = "userId는 1 이상의 값이어야 합니다.")
 	long userId,
 
-	// 쿠폰 ID가 Optional 이라면, NotNull을 제거하고 @Positive(or @Min)만 달 수도 있음
+
 	@Min(value = 1, message = "couponId는 1 이상의 값이어야 합니다.")
-	long couponId,
+	Long couponId,
 
 	@NotNull(message = "orderItems는 비어있으면 안 됩니다.")
 	@Valid // 각 OrderItem 내부 필드도 검증
@@ -23,6 +23,10 @@ public record OrderRequest(
 ) {
 	public List<OrderProduct> toOrderProducts() {
 		return orderItems.stream().map(OrderItem::toOrderProduct).collect(Collectors.toList());
+	}
+
+	public boolean isWithCoupon() {
+		return couponId != null && couponId > 0;
 	}
 
 	public record OrderItem(
