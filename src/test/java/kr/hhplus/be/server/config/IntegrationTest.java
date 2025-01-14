@@ -3,7 +3,11 @@ package kr.hhplus.be.server.config;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.restassured.RestAssured;
 import kr.hhplus.be.server.domain.balanace.BalanceFinder;
 import kr.hhplus.be.server.domain.balanace.BalanceModifier;
 import kr.hhplus.be.server.domain.balanace.BalanceService;
@@ -21,8 +25,14 @@ import kr.hhplus.be.server.infra.storage.payment.PaymentJpaRepository;
 import kr.hhplus.be.server.infra.storage.product.ProductJpaRepository;
 import kr.hhplus.be.server.infra.storage.user.UserJpaRepository;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class IntegrationTest {
+
+	@Autowired
+	protected ObjectMapper objectMapper;
+	@LocalServerPort
+	int port;
+
 
 	@Autowired
 	protected CouponInventoryJpaRepository couponInventoryJpaRepository;
@@ -71,6 +81,11 @@ public class IntegrationTest {
 
 	@Autowired
 	protected CouponIssuer couponIssuer;
+
+	@BeforeEach
+	void setUp() {
+		RestAssured.port = port;
+	}
 
 	@BeforeEach
 	void init() {

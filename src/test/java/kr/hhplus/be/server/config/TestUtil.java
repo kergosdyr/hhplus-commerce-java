@@ -19,6 +19,14 @@ public abstract class TestUtil {
 			.build();
 	}
 
+	public static Balance createTestBalance(long userId, long amount) {
+		return Balance.builder()
+			.userId(userId)
+			.amount(amount)
+			.build();
+	}
+
+
 	public static User createTestUser() {
 		return User.builder()
 			.name("전진")
