@@ -18,8 +18,9 @@ import kr.hhplus.be.server.domain.analytics.AnalyticData;
 import kr.hhplus.be.server.domain.analytics.AnalyticsSender;
 import kr.hhplus.be.server.domain.analytics.AnalyticsService;
 import kr.hhplus.be.server.domain.balanace.BalanceModifier;
+import kr.hhplus.be.server.domain.coupon.CouponApplier;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
-import kr.hhplus.be.server.domain.coupon.UserCouponLoader;
+import kr.hhplus.be.server.domain.coupon.UserCouponFinder;
 import kr.hhplus.be.server.domain.order.Order;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,7 +33,7 @@ class PaymentProcessorTest {
 	private PaymentRepository paymentRepository;
 
 	@Mock
-	private UserCouponLoader userCouponLoader;
+	private UserCouponFinder userCouponFinder;
 
 	@Mock
 	private Order mockOrder;
@@ -45,6 +46,10 @@ class PaymentProcessorTest {
 
 	@Mock
 	private AnalyticsSender analyticsSender;
+
+	@Mock
+	private CouponApplier couponApplier;
+
 
 	@InjectMocks
 	private PaymentProcessor paymentProcessor;
@@ -97,27 +102,20 @@ class PaymentProcessorTest {
 
 		when(mockOrder.getOrderId()).thenReturn(orderId);
 		when(mockOrder.getTotalPrice()).thenReturn(totalPrice);
-		when(mockUserCoupon.use(totalPrice)).thenReturn(2000L);
-
-		when(userCouponLoader.load(userId, couponId)).thenReturn(mockUserCoupon);
 
 		Payment savedPayment = Payment.builder()
 			.paymentId(888L)
 			.orderId(orderId)
 			.userId(userId)
 			.totalPrice(totalPrice)
-			.couponUsedPrice(2000L)
+			.couponAppliedPrice(2000L)
 			.build();
 		when(paymentRepository.save(any(Payment.class))).thenReturn(savedPayment);
 		when(analyticsSender.send(any(AnalyticData.class))).thenReturn(true);
+		when(couponApplier.apply(any(Long.class), any(Long.class), any(Long.class))).thenReturn(2000L);
 
 		// when
 		Payment result = paymentProcessor.processWithCoupon(userId, couponId, mockOrder);
-
-		// then
-		verify(userCouponLoader, times(1)).load(userId, couponId);
-
-		verify(mockUserCoupon, times(1)).use(totalPrice);
 
 		verify(balanceModifier, times(1)).use(userId, 2000L);
 
@@ -128,7 +126,7 @@ class PaymentProcessorTest {
 		assertThat(capturedPayment.getOrderId()).isEqualTo(orderId);
 		assertThat(capturedPayment.getUserId()).isEqualTo(userId);
 		assertThat(capturedPayment.getTotalPrice()).isEqualTo(totalPrice);
-		assertThat(capturedPayment.getCouponUsedPrice()).isEqualTo(2000L);
+		assertThat(capturedPayment.getCouponAppliedPrice()).isEqualTo(2000L);
 		assertThat(result).isEqualTo(savedPayment);
 	}
 

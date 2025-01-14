@@ -8,4 +8,6 @@ import org.springframework.stereotype.Component;
 public interface UserRepository {
 
 	Optional<User> findById(long userId);
+
+	boolean existsById(long userId);
 }

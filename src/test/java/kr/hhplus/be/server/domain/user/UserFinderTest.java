@@ -16,13 +16,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kr.hhplus.be.server.error.ApiException;
 
 @ExtendWith(MockitoExtension.class)
-class UserLoaderTest {
+class UserFinderTest {
 
 	@Mock
 	UserRepository userRepository;
 
 	@InjectMocks
-	UserLoader userLoader;
+	UserFinder userFinder;
 
 	@Test
 	@DisplayName("유저가 존재하지 않으면, ApiException을 발생시키고 User를 찾을 수 없다.")
@@ -34,7 +34,7 @@ class UserLoaderTest {
 		// when
 		// then
 		assertThatThrownBy(() -> {
-			userLoader.load(1L);
+			userFinder.findByUserId(1L);
 		}).isInstanceOf(ApiException.class).hasMessageContaining("요청하신 유저를 찾을 수 없습니다");
 
 	}
@@ -48,7 +48,7 @@ class UserLoaderTest {
 		Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
 		// when
-		User loadedUser = userLoader.load(1L);
+		User loadedUser = userFinder.findByUserId(1L);
 
 		// then
 		Assertions.assertThat(user).isEqualTo(loadedUser);

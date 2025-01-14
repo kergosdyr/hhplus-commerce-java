@@ -5,10 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.hhplus.be.server.domain.analytics.AnalyticData;
 import kr.hhplus.be.server.domain.analytics.AnalyticsSender;
-import kr.hhplus.be.server.domain.analytics.AnalyticsService;
 import kr.hhplus.be.server.domain.balanace.BalanceModifier;
-import kr.hhplus.be.server.domain.coupon.UserCoupon;
-import kr.hhplus.be.server.domain.coupon.UserCouponLoader;
+import kr.hhplus.be.server.domain.coupon.CouponApplier;
 import kr.hhplus.be.server.domain.order.Order;
 import lombok.RequiredArgsConstructor;
 
@@ -20,15 +18,15 @@ public class PaymentProcessor {
 
 	private final PaymentRepository paymentRepository;
 
-	private final UserCouponLoader userCouponLoader;
-
-	private final AnalyticsService analyticsService;
 	private final AnalyticsSender analyticsSender;
+
+	private final CouponApplier couponApplier;
 
 	@Transactional
 	public Payment process(long userId, Order order) {
 
 		long totalPrice = order.getTotalPrice();
+
 		balanceModifier.use(userId, totalPrice);
 
 		Payment payment = Payment.noCouponBuilder()
@@ -48,15 +46,15 @@ public class PaymentProcessor {
 
 		long totalPrice = order.getTotalPrice();
 
-		UserCoupon userCoupon = userCouponLoader.load(userId, couponId);
-		long couponUsedPrice = userCoupon.use(totalPrice);
-		balanceModifier.use(userId, couponUsedPrice);
+		long couponAppliedPrice = couponApplier.apply(totalPrice, userId, couponId);
+
+		balanceModifier.use(userId, couponAppliedPrice);
 
 		Payment payment = Payment.withCouponBuilder()
 			.orderId(order.getOrderId())
 			.totalPrice(totalPrice)
 			.userId(userId)
-			.couponUsedPrice(couponUsedPrice)
+			.couponAppliedPrice(couponAppliedPrice)
 			.build();
 
 		Payment savedPayment = paymentRepository.save(payment);

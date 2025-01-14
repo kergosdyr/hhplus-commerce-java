@@ -10,15 +10,15 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class UserCouponLoader {
+public class UserCouponFinder {
 
 	private final UserCouponRepository userCouponRepository;
 
-	public List<UserCoupon> loadAllByUserId(long userId) {
+	public List<UserCoupon> findAllByUserId(long userId) {
 		return userCouponRepository.findAllByUserId(userId);
 	}
 
-	public UserCoupon load(long userId, long couponId) {
+	public UserCoupon find(long userId, long couponId) {
 
 		return userCouponRepository.findByUserIdAndCouponId(userId, couponId)
 			.orElseThrow(() -> new ApiException(ErrorType.BALANCE_NOT_FOUND));
