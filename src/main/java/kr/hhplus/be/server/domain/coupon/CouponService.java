@@ -16,7 +16,7 @@ public class CouponService {
 
 	private final CouponIssuer couponIssuer;
 
-	private final UserCouponLoader couponLoader;
+	private final UserCouponFinder couponLoader;
 
 	private final UserFinder userFinder;
 
@@ -35,7 +35,7 @@ public class CouponService {
 			throw new ApiException(ErrorType.USER_NOT_FOUND);
 		}
 
-		return couponLoader.loadAllByUserId(userId);
+		return couponLoader.findAllByUserId(userId);
 
 	}
 

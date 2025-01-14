@@ -38,7 +38,7 @@ public class Payment extends BaseEntity {
 	private long totalPrice;
 
 	@Column
-	private long couponUsedPrice;
+	private long couponAppliedPrice;
 
 	@Column
 	private long couponId;
@@ -55,10 +55,10 @@ public class Payment extends BaseEntity {
 	}
 
 	@Builder(builderMethodName = "withCouponBuilder")
-	public Payment(long orderId, long userId, long couponUsedPrice, long totalPrice) {
+	public Payment(long orderId, long userId, long couponAppliedPrice, long totalPrice) {
 		this.orderId = orderId;
 		this.userId = userId;
-		this.couponUsedPrice = couponUsedPrice;
+		this.couponAppliedPrice = couponAppliedPrice;
 		this.totalPrice = totalPrice;
 	}
 }

@@ -23,7 +23,7 @@ class CouponLoaderTest {
 	private UserCouponRepository userCouponRepository;
 
 	@InjectMocks
-	private UserCouponLoader userCouponLoader;
+	private UserCouponFinder userCouponFinder;
 
 	@Test
 	@DisplayName("userId가 주어졌을 때, 해당 유저가 가진 모든 쿠폰을 정상적으로 조회한다.")
@@ -36,7 +36,7 @@ class CouponLoaderTest {
 			.thenReturn(List.of(mockUserCoupon));
 
 		// when
-		List<UserCoupon> result = userCouponLoader.loadAllByUserId(userId);
+		List<UserCoupon> result = userCouponFinder.findAllByUserId(userId);
 
 		// then
 		assertThat(result).hasSize(1);
@@ -54,7 +54,7 @@ class CouponLoaderTest {
 			.thenReturn(Collections.emptyList());
 
 		// when
-		List<UserCoupon> result = userCouponLoader.loadAllByUserId(userId);
+		List<UserCoupon> result = userCouponFinder.findAllByUserId(userId);
 
 		// then
 		assertThat(result).isEmpty();

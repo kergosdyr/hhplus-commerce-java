@@ -69,7 +69,7 @@ class OrderControllerTest extends WebIntegrationTest {
 			.isUsedCoupon(true)
 			.totalPrice(1800L)
 			.couponId(456L)
-			.couponUsedPrice(200L)
+			.couponAppliedPrice(200L)
 			.status(PaymentStatus.PAID)
 			.build();
 
@@ -147,7 +147,7 @@ class OrderControllerTest extends WebIntegrationTest {
 			.isUsedCoupon(true)
 			.totalPrice(1800L)
 			.couponId(456L)
-			.couponUsedPrice(200L)
+			.couponAppliedPrice(200L)
 			.status(PaymentStatus.PAID)
 			.build();
 
