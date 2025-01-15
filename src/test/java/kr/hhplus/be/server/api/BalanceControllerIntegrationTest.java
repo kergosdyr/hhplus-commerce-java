@@ -39,61 +39,26 @@ class BalanceControllerIntegrationTest extends IntegrationTest {
 
 	}
 
-	// @Test
-	// @DisplayName("[GET] /api/v1/balance/{userId} - 잔액 조회 성공 테스트")
-	// void getBalanceSuccessTest() throws Exception {
-	// 	// given
-	// 	var mockBalance = Balance.builder()
-	// 		.userId(123L)
-	// 		.amount(150000L)
-	// 		.build();
-	// 	Mockito.when(balanceService.get(123L)).thenReturn(mockBalance);
-	//
-	// 	// when & then
-	// 	mockMvc.perform(get("/api/v1/balance/123"))
-	// 		.andDo(MockMvcResultHandlers.print())
-	// 		.andExpect(status().isOk())
-	// 		.andExpect(jsonPath("$.data.userId").value(123))
-	// 		.andExpect(jsonPath("$.data.balance").value(150000));
-	// }
-	//
-	// @Test
-	// @DisplayName("[POST] /api/v1/balance/charge - 유효성 검증 실패(충전 금액 0원)")
-	// void chargeFailBecauseOfInvalidAmount() throws Exception {
-	// 	// given
-	// 	var invalidRequest = new BalanceChargeRequest(123L, 0L); // 0원 -> @Min(100) 위배
-	//
-	// 	// when & then
-	// 	mockMvc.perform(
-	// 			post("/api/v1/balance/charge")
-	// 				.contentType(MediaType.APPLICATION_JSON)
-	// 				.content(objectMapper.writeValueAsString(invalidRequest))
-	// 		)
-	// 		.andDo(MockMvcResultHandlers.print())
-	// 		.andExpect(status().isBadRequest()) // 400
-	// 		.andExpect(jsonPath("$.error.code").value("E400"))
-	// 		.andExpect(jsonPath("$.error.message").value(org.hamcrest.Matchers.containsString("잘못된 요청 정보를 전송하셨습니다.")))
-	// 		.andExpect(jsonPath("$.error.data").value(org.hamcrest.Matchers.containsString("최소 100원 이상 충전 가능합니다.")));
-	//
-	// }
-	//
-	// @Test
-	// @DisplayName("[POST] /api/v1/balance/charge - 유효성 검증 실패(userId = 0)")
-	// void chargeFailBecauseOfInvalidUserId() throws Exception {
-	// 	// given
-	// 	var invalidRequest = new BalanceChargeRequest(0L, 1000L);
-	//
-	// 	mockMvc.perform(
-	// 			post("/api/v1/balance/charge")
-	// 				.contentType(MediaType.APPLICATION_JSON)
-	// 				.content(objectMapper.writeValueAsString(invalidRequest))
-	// 		)
-	// 		.andDo(MockMvcResultHandlers.print())
-	// 		.andExpect(status().isBadRequest())
-	// 		.andExpect(jsonPath("$.error.code").value("E400"))
-	// 		.andExpect(jsonPath("$.error.message").value(org.hamcrest.Matchers.containsString("잘못된 요청 정보를 전송하셨습니다")))
-	// 		.andExpect(jsonPath("$.error.data").value(org.hamcrest.Matchers.containsString("userId는 1 이상의 값이어야 합니다.")));
-	//
-	// }
+	@Test
+	@DisplayName("[GET] /api/v1/balance/{userId} - 잔액 조회 성공 테스트")
+	void getBalanceSuccessTest() {
+		// given
+		User user = createTestUser();
+		userJpaRepository.save(user);
+		Balance balance = createTestBalance(user.getUserId(), 50000L);
+		balanceJpaRepository.save(balance);
+
+		// when & then
+		RestAssured
+			.given()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.when()
+			.get("/api/v1/balance/{userId}", user.getUserId())
+			.then()
+			.statusCode(200)
+			.body("data.userId", is(user.getUserId().intValue()))
+			.body("data.balance", is(50000));
+
+	}
 
 }
