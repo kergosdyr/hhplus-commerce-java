@@ -29,7 +29,7 @@ class OrderGeneratorIntegrationTest extends IntegrationTest {
 			.build()));
 
 		List<OrderProduct> orderProducts = savedProducts.stream()
-			.map(x -> new OrderProduct(1L, x.getProductId()))
+			.map(savedProduct -> new OrderProduct(1L, savedProduct.getProductId()))
 			.toList();
 
 		// when
@@ -39,7 +39,6 @@ class OrderGeneratorIntegrationTest extends IntegrationTest {
 		// then
 		assertThat(createdOrder).isNotNull();
 		assertThat(createdOrder.getUserId()).isEqualTo(userId);
-		assertThat(createdOrder.getTotal()).isEqualTo(orderProducts.size());
 
 		assertThat(orderDetails).hasSize(orderProducts.size());
 		assertThat(orderDetails)

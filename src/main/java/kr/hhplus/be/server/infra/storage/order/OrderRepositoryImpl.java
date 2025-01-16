@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.infra.storage.order;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Component;
 
 import kr.hhplus.be.server.domain.order.Order;
@@ -15,5 +17,10 @@ public class OrderRepositoryImpl implements OrderRepository {
 	@Override
 	public Order save(Order order) {
 		return orderJpaRepository.save(order);
+	}
+
+	@Override
+	public Optional<Order> findById(long orderId) {
+		return orderJpaRepository.findById(orderId);
 	}
 }

@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.hhplus.be.server.domain.product.Product;
+import kr.hhplus.be.server.domain.product.ProductReader;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -13,26 +15,31 @@ public class OrderGenerator {
 
 	private final OrderRepository orderRepository;
 
-	private final OrderDetailRepository orderDetailRepository;
+	private final ProductReader productReader;
+
 
 	@Transactional
 	public Order generate(long userId, List<OrderProduct> orderProducts) {
 
-		Order order = orderRepository.save(Order.builder()
-			.userId(userId)
-			.total(orderProducts.size())
-			.build());
+		List<OrderDetail> orderDetailList = orderProducts.stream().map(orderProduct -> {
 
-		List<OrderDetail> orderDetailList = orderProducts.stream().map(orderProduct ->
-			OrderDetail.builder()
-				.orderId(order.getOrderId())
-				.productId(orderProduct.productId())
+				Product product = productReader.read(orderProduct.productId());
+
+				return OrderDetail.builder()
+					.productId(product.getProductId())
 				.quantity(orderProduct.quantity())
-				.build()
+					.productPrice(product.getPrice())
+					.build();
+
+			}
 		).toList();
 
-		orderDetailRepository.save(orderDetailList);
-		return order;
+		Order order = Order.builder()
+			.userId(userId)
+			.orderDetails(orderDetailList)
+			.build();
+
+		return orderRepository.save(order);
 
 	}
 

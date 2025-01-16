@@ -18,7 +18,6 @@ import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderDetail;
 import kr.hhplus.be.server.domain.order.OrderPayment;
 import kr.hhplus.be.server.domain.payment.Payment;
-import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.enums.OrderStatus;
 import kr.hhplus.be.server.enums.PaymentStatus;
 
@@ -39,25 +38,18 @@ class OrderControllerTest extends WebIntegrationTest {
 			OrderDetail.builder()
 				.productId(1L)
 				.quantity(2L)
-				.product(Product.builder()
-					.productId(1L)
-					.price(500L)
-					.build())
+				.productPrice(400L)
 				.build(),
 			OrderDetail.builder()
 				.productId(2L)
 				.quantity(3L)
-				.product(Product.builder()
-					.productId(2L)
-					.price(300L)
-					.build())
+				.productPrice(400L)
 				.build()
 		);
 
 		var mockOrder = Order.builder()
 			.orderId(1L)
 			.userId(123L)
-			.total(2000L)
 			.status(OrderStatus.PAID)
 			.orderDetails(mockOrderDetails)
 			.build();
@@ -67,9 +59,9 @@ class OrderControllerTest extends WebIntegrationTest {
 			.orderId(1L)
 			.userId(123L)
 			.isUsedCoupon(true)
-			.totalPrice(1800L)
+			.paymentAmount(1800L)
 			.couponId(456L)
-			.couponAppliedPrice(200L)
+			.couponAppliedPrice(1800L)
 			.status(PaymentStatus.PAID)
 			.build();
 
@@ -88,18 +80,17 @@ class OrderControllerTest extends WebIntegrationTest {
 			.andExpect(jsonPath("$.data.orderId").value(1L))
 			.andExpect(jsonPath("$.data.userId").value(123L))
 			.andExpect(jsonPath("$.data.status").value("PAID"))
+			.andExpect(jsonPath("$.data.discountAmount").value(200L))
 			.andExpect(jsonPath("$.data.totalAmount").value(2000L))
-			.andExpect(jsonPath("$.data.discountAmount").value(100L))
-			.andExpect(jsonPath("$.data.paidAmount").value(1800L))
 			.andExpect(jsonPath("$.data.paymentId").value(1L))
 			.andExpect(jsonPath("$.data.paymentStatus").value("PAID"))
 			.andExpect(jsonPath("$.data.orderItems.length()").value(2))
 			.andExpect(jsonPath("$.data.orderItems[0].productId").value(1L))
 			.andExpect(jsonPath("$.data.orderItems[0].quantity").value(2L))
-			.andExpect(jsonPath("$.data.orderItems[0].price").value(500L))
+			.andExpect(jsonPath("$.data.orderItems[0].price").value(400L))
 			.andExpect(jsonPath("$.data.orderItems[1].productId").value(2L))
 			.andExpect(jsonPath("$.data.orderItems[1].quantity").value(3L))
-			.andExpect(jsonPath("$.data.orderItems[1].price").value(300L));
+			.andExpect(jsonPath("$.data.orderItems[1].price").value(400L));
 	}
 
 	@Test
@@ -107,8 +98,8 @@ class OrderControllerTest extends WebIntegrationTest {
 	void createOrderSuccessTestWithoutCoupon() throws Exception {
 		// given
 		var orderItems = List.of(
-			new OrderRequest.OrderItem(2L, 1L), // Product ID: 1, Quantity: 2
-			new OrderRequest.OrderItem(3L, 2L)  // Product ID: 2, Quantity: 3
+			new OrderRequest.OrderItem(2L, 1L),
+			new OrderRequest.OrderItem(3L, 2L)
 		);
 
 		var request = new OrderRequest(123L, null, orderItems); // userId, couponId, orderItems
@@ -117,25 +108,18 @@ class OrderControllerTest extends WebIntegrationTest {
 			OrderDetail.builder()
 				.productId(1L)
 				.quantity(2L)
-				.product(Product.builder()
-					.productId(1L)
-					.price(500L)
-					.build())
+				.productPrice(400L)
 				.build(),
 			OrderDetail.builder()
 				.productId(2L)
 				.quantity(3L)
-				.product(Product.builder()
-					.productId(2L)
-					.price(300L)
-					.build())
+				.productPrice(400L)
 				.build()
 		);
 
 		var mockOrder = Order.builder()
 			.orderId(1L)
 			.userId(123L)
-			.total(2000L)
 			.status(OrderStatus.PAID)
 			.orderDetails(mockOrderDetails)
 			.build();
@@ -145,9 +129,9 @@ class OrderControllerTest extends WebIntegrationTest {
 			.orderId(1L)
 			.userId(123L)
 			.isUsedCoupon(true)
-			.totalPrice(1800L)
+			.paymentAmount(2000L)
 			.couponId(456L)
-			.couponAppliedPrice(200L)
+			.couponAppliedPrice(0L)
 			.status(PaymentStatus.PAID)
 			.build();
 
@@ -167,17 +151,16 @@ class OrderControllerTest extends WebIntegrationTest {
 			.andExpect(jsonPath("$.data.userId").value(123L))
 			.andExpect(jsonPath("$.data.status").value("PAID"))
 			.andExpect(jsonPath("$.data.totalAmount").value(2000L))
-			.andExpect(jsonPath("$.data.discountAmount").value(100L))
-			.andExpect(jsonPath("$.data.paidAmount").value(1800L))
+			.andExpect(jsonPath("$.data.discountAmount").value(0L))
 			.andExpect(jsonPath("$.data.paymentId").value(1L))
 			.andExpect(jsonPath("$.data.paymentStatus").value("PAID"))
 			.andExpect(jsonPath("$.data.orderItems.length()").value(2))
 			.andExpect(jsonPath("$.data.orderItems[0].productId").value(1L))
 			.andExpect(jsonPath("$.data.orderItems[0].quantity").value(2L))
-			.andExpect(jsonPath("$.data.orderItems[0].price").value(500L))
+			.andExpect(jsonPath("$.data.orderItems[0].price").value(400L))
 			.andExpect(jsonPath("$.data.orderItems[1].productId").value(2L))
 			.andExpect(jsonPath("$.data.orderItems[1].quantity").value(3L))
-			.andExpect(jsonPath("$.data.orderItems[1].price").value(300L));
+			.andExpect(jsonPath("$.data.orderItems[1].price").value(400L));
 	}
 
 	@Test
