@@ -35,7 +35,7 @@ public class Payment extends BaseEntity {
 	private boolean isUsedCoupon;
 
 	@Column(nullable = false)
-	private long totalPrice;
+	private long paymentAmount;
 
 	@Column
 	private long couponAppliedPrice;
@@ -48,17 +48,17 @@ public class Payment extends BaseEntity {
 	private PaymentStatus status = PaymentStatus.PAID;
 
 	@Builder(builderMethodName = "noCouponBuilder")
-	private Payment(long orderId, long userId, long totalPrice) {
+	private Payment(long orderId, long userId, long paymentAmount) {
 		this.orderId = orderId;
 		this.userId = userId;
-		this.totalPrice = totalPrice;
+		this.paymentAmount = paymentAmount;
 	}
 
 	@Builder(builderMethodName = "withCouponBuilder")
-	public Payment(long orderId, long userId, long couponAppliedPrice, long totalPrice) {
+	public Payment(long orderId, long userId, long couponAppliedPrice, long paymentAmount) {
 		this.orderId = orderId;
 		this.userId = userId;
 		this.couponAppliedPrice = couponAppliedPrice;
-		this.totalPrice = totalPrice;
+		this.paymentAmount = paymentAmount;
 	}
 }
