@@ -35,7 +35,7 @@ public class ProductJpaRepositoryImpl implements ProductQueryDslRepository {
 			))
 			.from(order)
 			.join(order.orderDetails, orderDetail)
-			.join(orderDetail.product, product)
+			.join(product).on(orderDetail.productId.eq(product.productId)) // 조인 조건 추가
 			.where(order.createdAt.goe(startDate))
 			.groupBy(product.productId)
 			.orderBy(orderDetail.quantity.sum().desc())
