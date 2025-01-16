@@ -3,7 +3,11 @@ package kr.hhplus.be.server.config;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.restassured.RestAssured;
 import kr.hhplus.be.server.domain.balanace.BalanceFinder;
 import kr.hhplus.be.server.domain.balanace.BalanceModifier;
 import kr.hhplus.be.server.domain.balanace.BalanceService;
@@ -19,10 +23,18 @@ import kr.hhplus.be.server.infra.storage.order.OrderDetailJpaRepository;
 import kr.hhplus.be.server.infra.storage.order.OrderJpaRepository;
 import kr.hhplus.be.server.infra.storage.payment.PaymentJpaRepository;
 import kr.hhplus.be.server.infra.storage.product.ProductJpaRepository;
+import kr.hhplus.be.server.infra.storage.product.ProductStockJpaRepository;
 import kr.hhplus.be.server.infra.storage.user.UserJpaRepository;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class IntegrationTest {
+
+	@Autowired
+	protected ObjectMapper objectMapper;
+	@Autowired
+	protected ProductStockJpaRepository productStockJpaRepository;
+	@LocalServerPort
+	int port;
 
 	@Autowired
 	protected CouponInventoryJpaRepository couponInventoryJpaRepository;
@@ -57,6 +69,7 @@ public class IntegrationTest {
 	@Autowired
 	protected CouponJpaRepository couponJpaRepository;
 
+
 	@Autowired
 	protected UserCouponJpaRepository userCouponJpaRepository;
 
@@ -73,6 +86,11 @@ public class IntegrationTest {
 	protected CouponIssuer couponIssuer;
 
 	@BeforeEach
+	void setUp() {
+		RestAssured.port = port;
+	}
+
+	@BeforeEach
 	void init() {
 		couponInventoryJpaRepository.deleteAllInBatch();
 		couponJpaRepository.deleteAllInBatch();
@@ -83,5 +101,6 @@ public class IntegrationTest {
 		orderDetailJpaRepository.deleteAllInBatch();
 		userCouponJpaRepository.deleteAllInBatch();
 		userJpaRepository.deleteAllInBatch();
+		productStockJpaRepository.deleteAllInBatch();
 	}
 }
