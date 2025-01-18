@@ -3,11 +3,13 @@ package kr.hhplus.be.server.domain.order;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -38,25 +40,26 @@ public class Order extends BaseEntity {
 	@Column(nullable = false)
 	private long userId;
 
-	@Column(nullable = false)
-	private long total;
-
 	@Column(nullable = false, length = 50)
 	@Enumerated(EnumType.STRING)
 	@Builder.Default
 	private OrderStatus status = OrderStatus.UNPAID;
 
-	@OneToMany
-	@JoinColumn(name = "order_id", referencedColumnName = "order_id", insertable = false, updatable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "order_id", referencedColumnName = "order_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	@Builder.Default
 	private List<OrderDetail> orderDetails = new ArrayList<>();
 
-	public long getTotalPrice() {
+	public long getTotalAmount() {
 
 		return this.orderDetails.stream()
 			.reduce(0L,
-				(sum, orderDetail) -> sum + orderDetail.getQuantity() * orderDetail.getProduct().getPrice(),
+				(sum, orderDetail) -> sum + orderDetail.getAmount(),
 				Long::sum);
 
+	}
+
+	public void paid() {
+		this.status = OrderStatus.PAID;
 	}
 }

@@ -8,6 +8,7 @@ import kr.hhplus.be.server.domain.analytics.AnalyticsSender;
 import kr.hhplus.be.server.domain.balanace.BalanceModifier;
 import kr.hhplus.be.server.domain.coupon.CouponApplier;
 import kr.hhplus.be.server.domain.order.Order;
+import kr.hhplus.be.server.domain.order.OrderReader;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -18,41 +19,44 @@ public class PaymentProcessor {
 
 	private final PaymentRepository paymentRepository;
 
+	private final OrderReader orderReader;
+
 	private final AnalyticsSender analyticsSender;
 
 	private final CouponApplier couponApplier;
 
 	@Transactional
-	public Payment process(long userId, Order order) {
+	public Payment process(long userId, long orderId) {
 
-		long totalPrice = order.getTotalPrice();
+		Order order = orderReader.read(orderId);
+		order.paid();
 
-		balanceModifier.use(userId, totalPrice);
+		balanceModifier.use(userId, order.getTotalAmount());
 
 		Payment payment = Payment.noCouponBuilder()
-			.orderId(order.getOrderId())
-			.totalPrice(totalPrice)
+			.orderId(orderId)
+			.paymentAmount(order.getTotalAmount())
 			.userId(userId)
 			.build();
 
 		Payment savedPayment = paymentRepository.save(payment);
-		analyticsSender.send(new AnalyticData(savedPayment.getPaymentId(), order.getOrderId(), order.getCreatedAt()));
+		analyticsSender.send(new AnalyticData(savedPayment.getPaymentId(), orderId, order.getCreatedAt()));
 		return savedPayment;
 
 	}
 
 	@Transactional
-	public Payment processWithCoupon(long userId, long couponId, Order order) {
+	public Payment processWithCoupon(long userId, long couponId, long orderId) {
 
-		long totalPrice = order.getTotalPrice();
+		Order order = orderReader.read(orderId);
+		order.paid();
 
-		long couponAppliedPrice = couponApplier.apply(totalPrice, userId, couponId);
-
+		long couponAppliedPrice = couponApplier.apply(order.getTotalAmount(), userId, couponId);
 		balanceModifier.use(userId, couponAppliedPrice);
 
 		Payment payment = Payment.withCouponBuilder()
 			.orderId(order.getOrderId())
-			.totalPrice(totalPrice)
+			.paymentAmount(couponAppliedPrice)
 			.userId(userId)
 			.couponAppliedPrice(couponAppliedPrice)
 			.build();

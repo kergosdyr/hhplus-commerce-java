@@ -22,6 +22,7 @@ import kr.hhplus.be.server.domain.coupon.CouponApplier;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.domain.coupon.UserCouponFinder;
 import kr.hhplus.be.server.domain.order.Order;
+import kr.hhplus.be.server.domain.order.OrderReader;
 
 @ExtendWith(MockitoExtension.class)
 class PaymentProcessorTest {
@@ -54,6 +55,9 @@ class PaymentProcessorTest {
 	@InjectMocks
 	private PaymentProcessor paymentProcessor;
 
+	@Mock
+	private OrderReader orderReader;
+
 	@Test
 	@DisplayName("process() 호출 시 쿠폰 없이 결제를 진행하고, Payment를 저장 후 반환한다.")
 	void shouldProcessPaymentWithoutCoupon() {
@@ -63,20 +67,21 @@ class PaymentProcessorTest {
 		long totalPrice = 3000L;
 
 		when(mockOrder.getOrderId()).thenReturn(orderId);
-		when(mockOrder.getTotalPrice()).thenReturn(totalPrice);
+		when(mockOrder.getTotalAmount()).thenReturn(totalPrice);
 
 		Payment savedPayment = Payment.builder()
 			.paymentId(1L)
 			.orderId(orderId)
 			.userId(userId)
-			.totalPrice(totalPrice)
+			.paymentAmount(totalPrice)
 			.build();
 
 		when(paymentRepository.save(any(Payment.class))).thenReturn(savedPayment);
 		when(analyticsSender.send(any(AnalyticData.class))).thenReturn(true);
+		when(orderReader.read(orderId)).thenReturn(mockOrder);
 
 		// when
-		Payment result = paymentProcessor.process(userId, mockOrder);
+		Payment result = paymentProcessor.process(userId, mockOrder.getOrderId());
 
 		// then
 		verify(balanceModifier, times(1)).use(userId, totalPrice);
@@ -86,7 +91,7 @@ class PaymentProcessorTest {
 		Payment capturedPayment = paymentCaptor.getValue();
 		assertThat(capturedPayment.getUserId()).isEqualTo(userId);
 		assertThat(capturedPayment.getOrderId()).isEqualTo(orderId);
-		assertThat(capturedPayment.getTotalPrice()).isEqualTo(totalPrice);
+		assertThat(capturedPayment.getPaymentAmount()).isEqualTo(totalPrice);
 
 		assertThat(result).isEqualTo(savedPayment);
 	}
@@ -99,25 +104,28 @@ class PaymentProcessorTest {
 		long couponId = 100L;
 		long orderId = 20L;
 		long totalPrice = 5000L;
+		long couponAppliedPrice = 2000L;
 
 		when(mockOrder.getOrderId()).thenReturn(orderId);
-		when(mockOrder.getTotalPrice()).thenReturn(totalPrice);
+		when(mockOrder.getTotalAmount()).thenReturn(totalPrice);
 
 		Payment savedPayment = Payment.builder()
 			.paymentId(888L)
 			.orderId(orderId)
 			.userId(userId)
-			.totalPrice(totalPrice)
-			.couponAppliedPrice(2000L)
+			.paymentAmount(couponAppliedPrice)
+			.couponAppliedPrice(couponAppliedPrice)
 			.build();
+
 		when(paymentRepository.save(any(Payment.class))).thenReturn(savedPayment);
 		when(analyticsSender.send(any(AnalyticData.class))).thenReturn(true);
-		when(couponApplier.apply(any(Long.class), any(Long.class), any(Long.class))).thenReturn(2000L);
+		when(couponApplier.apply(any(Long.class), any(Long.class), any(Long.class))).thenReturn(couponAppliedPrice);
+		when(orderReader.read(orderId)).thenReturn(mockOrder);
 
 		// when
-		Payment result = paymentProcessor.processWithCoupon(userId, couponId, mockOrder);
+		Payment result = paymentProcessor.processWithCoupon(userId, couponId, mockOrder.getOrderId());
 
-		verify(balanceModifier, times(1)).use(userId, 2000L);
+		verify(balanceModifier, times(1)).use(userId, couponAppliedPrice);
 
 		ArgumentCaptor<Payment> paymentCaptor = ArgumentCaptor.forClass(Payment.class);
 		verify(paymentRepository, times(1)).save(paymentCaptor.capture());
@@ -125,8 +133,8 @@ class PaymentProcessorTest {
 		Payment capturedPayment = paymentCaptor.getValue();
 		assertThat(capturedPayment.getOrderId()).isEqualTo(orderId);
 		assertThat(capturedPayment.getUserId()).isEqualTo(userId);
-		assertThat(capturedPayment.getTotalPrice()).isEqualTo(totalPrice);
-		assertThat(capturedPayment.getCouponAppliedPrice()).isEqualTo(2000L);
+		assertThat(capturedPayment.getPaymentAmount()).isEqualTo(couponAppliedPrice);
+		assertThat(capturedPayment.getCouponAppliedPrice()).isEqualTo(couponAppliedPrice);
 		assertThat(result).isEqualTo(savedPayment);
 	}
 

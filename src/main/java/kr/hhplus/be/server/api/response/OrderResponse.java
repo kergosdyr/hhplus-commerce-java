@@ -13,7 +13,6 @@ public record OrderResponse(long orderId,
 							String status,
 							long totalAmount,
 							long discountAmount,
-							long paidAmount,
 							long paymentId,
 							String paymentStatus,
 							List<OrderItem> orderItems,
@@ -27,23 +26,20 @@ public record OrderResponse(long orderId,
 			order.getOrderId(),
 			order.getUserId(),
 			order.getStatus().name(),
-			order.getTotal(),
-			order.getTotalPrice() - payment.getTotalPrice(),
-			payment.getTotalPrice(),
+			order.getTotalAmount(),
+			order.getTotalAmount() - payment.getPaymentAmount(),
 			payment.getPaymentId(),
 			payment.getStatus().name(),
-			order.getOrderDetails().stream().map(OrderItem::fromOrderDetails).toList(),
+			order.getOrderDetails().stream().map(OrderItem::from).toList(),
 			order.getCreatedAt()
 		);
 
 	}
 
 	record OrderItem(long productId, long quantity, long price) {
-		public static OrderItem fromOrderDetails(OrderDetail orderDetail) {
-			return new OrderItem(orderDetail.getProductId(), orderDetail.getQuantity(),
-				orderDetail.getProduct().getPrice());
+		public static OrderItem from(OrderDetail orderDetail) {
+			return new OrderItem(orderDetail.getProductId(), orderDetail.getQuantity(), orderDetail.getProductPrice());
 		}
-
 	}
 
 }

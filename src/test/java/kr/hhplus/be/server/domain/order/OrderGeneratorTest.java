@@ -2,9 +2,6 @@ package kr.hhplus.be.server.domain.order;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -16,6 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kr.hhplus.be.server.domain.product.Product;
+import kr.hhplus.be.server.domain.product.ProductReader;
+
 @ExtendWith(MockitoExtension.class)
 class OrderGeneratorTest {
 
@@ -23,7 +23,9 @@ class OrderGeneratorTest {
 	OrderRepository orderRepository;
 
 	@Mock
-	OrderDetailRepository orderDetailRepository;
+	ProductReader productReader;
+
+
 
 	@InjectMocks
 	OrderGenerator orderGenerator;
@@ -40,19 +42,45 @@ class OrderGeneratorTest {
 			Order.builder()
 				.orderId(1L)
 				.userId(1L)
-				.total(2L)
+				.orderDetails(List.of(
+					OrderDetail.builder()
+						.productId(2L)
+						.productPrice(1000L)
+						.quantity(1L)
+						.build(),
+					OrderDetail.builder()
+						.productId(3L)
+						.productPrice(2000L)
+						.quantity(1L)
+						.build()
+
+				))
 				.build()
 		);
 
+		when(productReader.read(2L)).thenReturn(
+			Product.builder()
+				.productId(2L)
+				.price(1000L)
+				.build()
+		);
+
+		when(productReader.read(1L)).thenReturn(
+			Product.builder()
+				.productId(1L)
+				.price(2000L)
+				.build()
+		);
+
+
+
+
 		var generatedOrder = orderGenerator.generate(1L, orderProducts);
 
-		verify(orderRepository, times(1)).save(any(Order.class));
-		verify(orderDetailRepository, times(1)).save(argThat(
-			list -> list != null && list.size() == 2
-		));
-
 		assertThat(generatedOrder).isNotNull();
-		assertThat(generatedOrder.getTotal()).isEqualTo(2L);
+		assertThat(generatedOrder.getUserId()).isEqualTo(1L);
+		assertThat(generatedOrder.getTotalAmount()).isEqualTo(3000L);
+
 
 	}
 

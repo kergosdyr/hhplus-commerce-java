@@ -34,7 +34,7 @@ public class OrderService {
 
 		Order order = orderGenerator.generate(userId, orderProducts);
 		productStockModifier.sell(orderProducts);
-		Payment payment = paymentProcessor.process(userId, order);
+		Payment payment = paymentProcessor.process(userId, order.getOrderId());
 
 		return new OrderPayment(order, payment);
 
@@ -49,7 +49,7 @@ public class OrderService {
 
 		Order order = orderGenerator.generate(userId, orderProducts);
 		productStockModifier.sell(orderProducts);
-		Payment payment = paymentProcessor.processWithCoupon(userId, couponId, order);
+		Payment payment = paymentProcessor.processWithCoupon(userId, couponId, order.getOrderId());
 
 		return new OrderPayment(order, payment);
 

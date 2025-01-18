@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductRepository;
 import kr.hhplus.be.server.domain.product.ProductSell;
+import kr.hhplus.be.server.error.ApiException;
+import kr.hhplus.be.server.error.ErrorType;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -18,12 +20,12 @@ public class ProductRepositoryImpl implements ProductRepository {
 
 	@Override
 	public List<Product> findAll(int page, int size) {
-		return productJpaRepository.findAllWithoutCount(Pageable.ofSize(size).withPage(page));
+		return productJpaRepository.findAllWithoutCount(Pageable.ofSize(size).withPage(page - 1));
 	}
 
 	@Override
 	public List<Product> findAllByKeyword(String keyword, int page, int size) {
-		return productJpaRepository.findAllByKeywordWithoutCount(keyword, Pageable.ofSize(size).withPage(page));
+		return productJpaRepository.findAllByKeywordWithoutCount(keyword, Pageable.ofSize(size).withPage(page - 1));
 	}
 
 	@Override
@@ -39,6 +41,12 @@ public class ProductRepositoryImpl implements ProductRepository {
 	@Override
 	public List<ProductSell> findAllTopSellers(int days) {
 		return productJpaRepository.findAllTopSellers(days);
+	}
+
+	@Override
+	public Product findById(long productId) {
+		return productJpaRepository.findById(productId)
+			.orElseThrow(() -> new ApiException(ErrorType.PRODUCT_NOT_FOUND));
 	}
 
 }
