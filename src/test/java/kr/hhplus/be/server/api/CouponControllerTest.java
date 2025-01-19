@@ -14,12 +14,12 @@ import org.mockito.Mockito;
 import org.springframework.http.MediaType;
 
 import kr.hhplus.be.server.api.request.CouponIssueRequest;
-import kr.hhplus.be.server.config.WebIntegrationTest;
+import kr.hhplus.be.server.config.WebMvcTest;
 import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.enums.UserCouponStatus;
 
-class CouponControllerTest extends WebIntegrationTest {
+class CouponControllerTest extends WebMvcTest {
 
 	@Test
 	@DisplayName("[POST] /api/v1/coupons/issue - 쿠폰 발급 성공 테스트")

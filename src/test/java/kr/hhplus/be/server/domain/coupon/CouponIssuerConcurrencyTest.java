@@ -25,7 +25,7 @@ class CouponIssuerConcurrencyTest extends IntegrationTest {
 		CouponInventory savedCouponInventory = couponInventoryJpaRepository.save(couponInventory);
 		//when
 		AtomicLong userId = new AtomicLong();
-		var run = ConcurrencyTestUtil.run(40, () -> {
+		var run = ConcurrencyTestUtil.run(100, () -> {
 			try {
 				couponIssuer.issue(userId.getAndIncrement(), savedCoupon.getCouponId(),
 					LocalDateTime.of(2025, 1, 1, 0, 0));
@@ -38,7 +38,7 @@ class CouponIssuerConcurrencyTest extends IntegrationTest {
 		});
 		//then
 		assertThat(run.success()).isEqualTo(30);
-		assertThat(run.fail()).isEqualTo(10);
+		assertThat(run.fail()).isEqualTo(70);
 
 	}
 

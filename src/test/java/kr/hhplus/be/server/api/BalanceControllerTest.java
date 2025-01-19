@@ -12,10 +12,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import kr.hhplus.be.server.api.request.BalanceChargeRequest;
-import kr.hhplus.be.server.config.WebIntegrationTest;
+import kr.hhplus.be.server.config.WebMvcTest;
 import kr.hhplus.be.server.domain.balanace.Balance;
 
-class BalanceControllerTest extends WebIntegrationTest {
+class BalanceControllerTest extends WebMvcTest {
 
 	@Test
 	@DisplayName("[POST] /api/v1/balance/charge - 잔액 충전 성공 테스트")

@@ -12,12 +12,12 @@ import org.mockito.Mockito;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import kr.hhplus.be.server.api.config.PageInfo;
-import kr.hhplus.be.server.config.WebIntegrationTest;
+import kr.hhplus.be.server.config.WebMvcTest;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductSell;
 import kr.hhplus.be.server.domain.product.ProductStock;
 
-class ProductControllerTest extends WebIntegrationTest {
+class ProductControllerTest extends WebMvcTest {
 	@Test
 	@DisplayName("[GET] /api/v1/products - 상품 목록 조회 성공 테스트")
 	void getProductsSuccessTest() throws Exception {

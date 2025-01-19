@@ -3,7 +3,6 @@ package kr.hhplus.be.server.config;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -14,9 +13,9 @@ import kr.hhplus.be.server.domain.coupon.CouponService;
 import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.product.ProductService;
 
-@WebMvcTest
+@org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 @ExtendWith(MockitoExtension.class)
-public class WebIntegrationTest {
+public class WebMvcTest {
 
 	@Autowired
 	protected ObjectMapper objectMapper;

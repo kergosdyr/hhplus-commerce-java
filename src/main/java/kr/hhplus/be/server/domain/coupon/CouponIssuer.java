@@ -2,13 +2,9 @@ package kr.hhplus.be.server.domain.coupon;
 
 import java.time.LocalDateTime;
 
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.persistence.OptimisticLockException;
-import jakarta.transaction.Transactional;
 import kr.hhplus.be.server.enums.UserCouponStatus;
 import kr.hhplus.be.server.error.ApiException;
 import kr.hhplus.be.server.error.ErrorType;
@@ -24,11 +20,6 @@ public class CouponIssuer {
 
 	private final UserCouponRepository userCouponRepository;
 
-	@Retryable(
-		retryFor = {OptimisticLockException.class, ObjectOptimisticLockingFailureException.class},
-		maxAttempts = 6, // 재시도 횟수
-		backoff = @Backoff(delay = 300, multiplier = 1.2) // 재시도 간격(밀리초 단위)
-	)
 	@Transactional
 	public UserCoupon issue(long userId, long couponId, LocalDateTime issuedAt) {
 
