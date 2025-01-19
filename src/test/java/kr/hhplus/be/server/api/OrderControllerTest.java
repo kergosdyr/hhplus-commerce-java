@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import kr.hhplus.be.server.api.request.OrderRequest;
-import kr.hhplus.be.server.config.WebIntegrationTest;
+import kr.hhplus.be.server.config.WebMvcTest;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderDetail;
 import kr.hhplus.be.server.domain.order.OrderPayment;
@@ -21,7 +21,7 @@ import kr.hhplus.be.server.domain.payment.Payment;
 import kr.hhplus.be.server.enums.OrderStatus;
 import kr.hhplus.be.server.enums.PaymentStatus;
 
-class OrderControllerTest extends WebIntegrationTest {
+class OrderControllerTest extends WebMvcTest {
 
 	@Test
 	@DisplayName("[POST] /api/v1/order - 주문 생성/결제 성공 테스트")

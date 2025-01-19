@@ -19,7 +19,6 @@ class CouponTest {
 			.amount(1000L)
 			.status("ACTIVE")
 			.expiredAt(expiredAt)
-			.couponInventory(couponInventory)
 			.build();
 	}
 

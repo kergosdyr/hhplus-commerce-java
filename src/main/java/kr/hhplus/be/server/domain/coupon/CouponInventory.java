@@ -6,7 +6,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Version;
 import kr.hhplus.be.server.domain.BaseEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -25,15 +24,12 @@ public class CouponInventory extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long inventoryId;
 
-	@Column(nullable = false)
+	@Column(nullable = false, unique = true)
 	private long couponId;
 
 	@Column(nullable = false)
 	private long quantity;
 
-	@Version
-	@Column(nullable = false)
-	private long version;
 
 	public void issue() {
 		this.quantity--;
