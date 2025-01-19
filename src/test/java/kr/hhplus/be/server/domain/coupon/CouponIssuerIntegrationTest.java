@@ -82,8 +82,7 @@ class CouponIssuerIntegrationTest extends IntegrationTest {
 			LocalDateTime.of(2025, 1, 1, 0, 0));
 		Coupon updatedCoupon = couponJpaRepository.findById(savedCoupon.getCouponId())
 			.orElseThrow(RuntimeException::new);
-		var byCouponIdWithLock = couponInventoryJpaRepository.findByCouponIdWithLock(
-			updatedCoupon.getCouponId()).get();
+		var byCouponIdWithLock = couponInventoryJpaRepository.findByCouponId(updatedCoupon.getCouponId()).get();
 
 		//then
 		assertThat(issuedUserCoupon.getCouponId()).isEqualTo(updatedCoupon.getCouponId());

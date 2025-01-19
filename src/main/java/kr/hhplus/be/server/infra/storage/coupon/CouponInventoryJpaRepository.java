@@ -14,4 +14,6 @@ public interface CouponInventoryJpaRepository extends JpaRepository<CouponInvent
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	@Query("select c from CouponInventory c where c.couponId = ?1")
 	Optional<CouponInventory> findByCouponIdWithLock(long couponId);
+
+	Optional<CouponInventory> findByCouponId(long couponId);
 }
