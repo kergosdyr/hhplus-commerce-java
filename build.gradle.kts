@@ -35,6 +35,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+
 	implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.10.0")
 	testImplementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.10.0")
 	implementation("org.springframework.retry:spring-retry")

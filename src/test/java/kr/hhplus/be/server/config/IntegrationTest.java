@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.ApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -33,6 +34,7 @@ public class IntegrationTest {
 	protected ObjectMapper objectMapper;
 	@Autowired
 	protected ProductStockJpaRepository productStockJpaRepository;
+
 	@LocalServerPort
 	int port;
 
@@ -68,6 +70,9 @@ public class IntegrationTest {
 
 	@Autowired
 	protected CouponJpaRepository couponJpaRepository;
+
+	@Autowired
+	protected ApplicationContext applicationContext;
 
 
 	@Autowired
