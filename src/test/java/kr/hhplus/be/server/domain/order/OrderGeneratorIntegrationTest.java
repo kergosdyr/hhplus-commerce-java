@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import kr.hhplus.be.server.config.IntegrationTest;
 import kr.hhplus.be.server.domain.product.Product;
+import kr.hhplus.be.server.enums.ProductStatus;
 
 class OrderGeneratorIntegrationTest extends IntegrationTest {
 
@@ -21,11 +22,11 @@ class OrderGeneratorIntegrationTest extends IntegrationTest {
 		List<Product> savedProducts = productJpaRepository.saveAll(List.of(Product.builder()
 			.price(1000L)
 			.name("전진 상품1")
-			.status("VALID")
+			.status(ProductStatus.AVAILABLE)
 			.build(), Product.builder()
 			.price(2000L)
 			.name("전진 상품2")
-			.status("VALID")
+			.status(ProductStatus.AVAILABLE)
 			.build()));
 
 		List<OrderProduct> orderProducts = savedProducts.stream()

@@ -1,23 +1,28 @@
-package kr.hhplus.be.server.infra.storage.config;
+package kr.hhplus.be.server.infra.redis.lock;
 
 import java.time.Duration;
 import java.util.UUID;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
-@Component
-public class LettuceLockManager {
+import kr.hhplus.be.server.config.LockManager;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-	private static final long EXPIRE_TIME_MILLIS = 5000L;
-	private static final long WAIT_TIME_MILLIS = 5000L;
+@Component
+@RequiredArgsConstructor
+@Slf4j
+@Profile("lettuce")
+public class LettuceLockManager implements LockManager {
+
+	private static final long EXPIRE_TIME_MILLIS = 100000L;
+	private static final long WAIT_TIME_MILLIS = 50000L;
 	private static final long RETRY_INTERVAL_MILLIS = 100L;
 	private final StringRedisTemplate redisTemplate;
 
-	public LettuceLockManager(StringRedisTemplate redisTemplate) {
-		this.redisTemplate = redisTemplate;
-	}
-
+	@Override
 	public String acquire(String lockKey) {
 
 		String lockValue = UUID.randomUUID().toString();
@@ -41,10 +46,10 @@ public class LettuceLockManager {
 		return null;
 	}
 
-	public void release(String lockKey, String lockValue) {
-		String currentValue = redisTemplate.opsForValue().get(lockKey);
-
-		if (lockValue.equals(currentValue)) {
+	@Override
+	public void release(String lockKey) {
+		String lockValue = redisTemplate.opsForValue().get(lockKey);
+		if (lockValue != null) {
 			redisTemplate.delete(lockKey);
 		}
 	}

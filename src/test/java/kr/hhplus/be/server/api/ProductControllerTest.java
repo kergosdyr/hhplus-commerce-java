@@ -16,6 +16,7 @@ import kr.hhplus.be.server.config.WebMvcTest;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductSell;
 import kr.hhplus.be.server.domain.product.ProductStock;
+import kr.hhplus.be.server.enums.ProductStatus;
 
 class ProductControllerTest extends WebMvcTest {
 	@Test
@@ -27,7 +28,7 @@ class ProductControllerTest extends WebMvcTest {
 				.productId(1L)
 				.name("Apple iPad")
 				.price(500000L)
-				.status("AVAILABLE")
+				.status(ProductStatus.AVAILABLE)
 				.productStock(ProductStock.builder()
 					.stock(100L)
 					.build())
@@ -36,7 +37,7 @@ class ProductControllerTest extends WebMvcTest {
 				.productId(2L)
 				.name("Galaxy Tab")
 				.price(400000L)
-				.status("AVAILABLE")
+				.status(ProductStatus.AVAILABLE)
 				.productStock(ProductStock.builder()
 					.stock(50L)
 					.build())
@@ -75,7 +76,7 @@ class ProductControllerTest extends WebMvcTest {
 					.productId(1L)
 					.name("Apple iPad")
 					.price(500000L)
-					.status("AVAILABLE")
+					.status(ProductStatus.AVAILABLE)
 					.build(),
 				150L
 			),
@@ -84,7 +85,7 @@ class ProductControllerTest extends WebMvcTest {
 					.productId(5L)
 					.name("MacBook Air")
 					.price(1500000L)
-					.status("AVAILABLE")
+					.status(ProductStatus.AVAILABLE)
 					.build(),
 				100L
 			)

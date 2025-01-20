@@ -14,7 +14,9 @@ import kr.hhplus.be.server.domain.order.OrderDetail;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductStock;
 import kr.hhplus.be.server.domain.user.User;
+import kr.hhplus.be.server.enums.CouponStatus;
 import kr.hhplus.be.server.enums.OrderStatus;
+import kr.hhplus.be.server.enums.ProductStatus;
 import kr.hhplus.be.server.enums.UserCouponStatus;
 
 public abstract class TestUtil {
@@ -46,7 +48,7 @@ public abstract class TestUtil {
 			.amount(1000L)
 			.expiredAt(expiredAt)
 			.name("전진 쿠폰")
-			.status("VALID")
+			.status(CouponStatus.ACTIVE)
 			.build();
 	}
 
@@ -86,7 +88,7 @@ public abstract class TestUtil {
 		return Product.builder()
 			.name(name)
 			.price(price)
-			.status("AVAILABLE")
+			.status(ProductStatus.AVAILABLE)
 			.build();
 	}
 
