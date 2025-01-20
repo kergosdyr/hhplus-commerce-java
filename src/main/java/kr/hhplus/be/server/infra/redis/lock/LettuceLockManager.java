@@ -20,7 +20,12 @@ public class LettuceLockManager implements LockManager {
 	private static final long EXPIRE_TIME_MILLIS = 100000L;
 	private static final long WAIT_TIME_MILLIS = 50000L;
 	private static final long RETRY_INTERVAL_MILLIS = 100L;
+	public static final String LETTUCE_LOCK_PREFIX = "lettuce";
 	private final StringRedisTemplate redisTemplate;
+
+	private static String getKey(String lockKey) {
+		return LETTUCE_LOCK_PREFIX + lockKey;
+	}
 
 	@Override
 	public String acquire(String lockKey) {
@@ -29,7 +34,7 @@ public class LettuceLockManager implements LockManager {
 		long deadline = System.currentTimeMillis() + WAIT_TIME_MILLIS;
 
 		while (System.currentTimeMillis() < deadline) {
-			Boolean isLocked = redisTemplate.opsForValue().setIfAbsent(lockKey, lockValue, Duration.ofMillis(
+			Boolean isLocked = redisTemplate.opsForValue().setIfAbsent(getKey(lockKey), lockValue, Duration.ofMillis(
 				EXPIRE_TIME_MILLIS));
 			if (Boolean.TRUE.equals(isLocked)) {
 				return lockValue;
@@ -48,9 +53,9 @@ public class LettuceLockManager implements LockManager {
 
 	@Override
 	public void release(String lockKey) {
-		String lockValue = redisTemplate.opsForValue().get(lockKey);
+		String lockValue = redisTemplate.opsForValue().get(getKey(lockKey));
 		if (lockValue != null) {
-			redisTemplate.delete(lockKey);
+			redisTemplate.delete(getKey(lockKey));
 		}
 	}
 }

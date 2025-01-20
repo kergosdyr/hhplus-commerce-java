@@ -14,4 +14,6 @@ public interface ProductStockJpaRepository extends JpaRepository<ProductStock, L
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	@Query("select p from ProductStock p where p.productId = ?1")
 	Optional<ProductStock> findByProductIdWithLock(long productId);
+
+	Optional<ProductStock> findByProductId(long productId);
 }

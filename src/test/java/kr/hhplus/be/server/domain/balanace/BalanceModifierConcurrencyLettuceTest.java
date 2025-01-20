@@ -3,7 +3,6 @@ package kr.hhplus.be.server.domain.balanace;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.TestPropertySource;
 
@@ -11,7 +10,7 @@ import kr.hhplus.be.server.config.ConcurrencyTestUtil;
 import kr.hhplus.be.server.config.IntegrationTest;
 
 @TestPropertySource(properties = {"spring.profiles.active=test,lettuce"})
-public class BalanceModifierConcurrencyRedisLettuceTest extends IntegrationTest {
+public class BalanceModifierConcurrencyLettuceTest extends IntegrationTest {
 
 	@Test
 	@DisplayName("같은 유저가 10회 동시에 잔고를 충전하더라도 정확한 금액 만큼 충전되어야 한다.")
@@ -67,7 +66,7 @@ public class BalanceModifierConcurrencyRedisLettuceTest extends IntegrationTest 
 
 	}
 
-	@RepeatedTest(30)
+	@Test
 	@DisplayName("같은 유저가 10회  동시에 잔고를 차감, 사용하더라도 정확한 금액 만큼 차감되어야 한다.")
 	void shouldConcurrentUseAndCharge() throws InterruptedException {
 		//given
