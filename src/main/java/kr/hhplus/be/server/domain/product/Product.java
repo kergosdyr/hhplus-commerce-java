@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import kr.hhplus.be.server.domain.BaseEntity;
+import kr.hhplus.be.server.enums.ProductStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,7 +37,7 @@ public class Product extends BaseEntity {
 	private long price;
 
 	@Column(nullable = false, length = 50)
-	private String status;
+	private ProductStatus status;
 
 	@OneToOne
 	@JoinColumn(name = "product_id", referencedColumnName = "product_id", insertable = false, updatable = false, foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))

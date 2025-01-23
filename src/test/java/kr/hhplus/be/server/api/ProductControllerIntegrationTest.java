@@ -18,6 +18,7 @@ import kr.hhplus.be.server.domain.order.OrderDetail;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductStock;
 import kr.hhplus.be.server.enums.OrderStatus;
+import kr.hhplus.be.server.enums.ProductStatus;
 
 public class ProductControllerIntegrationTest extends IntegrationTest {
 
@@ -28,7 +29,7 @@ public class ProductControllerIntegrationTest extends IntegrationTest {
 		Product product1 = productJpaRepository.save(Product.builder()
 			.name("Apple iPad")
 			.price(500000L)
-			.status("AVAILABLE")
+			.status(ProductStatus.AVAILABLE)
 			.build());
 
 		productStockJpaRepository.save(ProductStock.builder()
@@ -39,7 +40,7 @@ public class ProductControllerIntegrationTest extends IntegrationTest {
 		Product product2 = productJpaRepository.save(Product.builder()
 			.name("Galaxy Tab")
 			.price(400000L)
-			.status("AVAILABLE")
+			.status(ProductStatus.AVAILABLE)
 			.build());
 
 		productStockJpaRepository.save(ProductStock.builder()
@@ -50,7 +51,7 @@ public class ProductControllerIntegrationTest extends IntegrationTest {
 		Product product3 = productJpaRepository.save(Product.builder()
 			.name("MacBook Air")
 			.price(1500000L)
-			.status("AVAILABLE")
+			.status(ProductStatus.AVAILABLE)
 			.build());
 
 		productStockJpaRepository.save(ProductStock.builder()
