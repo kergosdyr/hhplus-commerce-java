@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kr.hhplus.be.server.enums.CouponStatus;
+
 @ExtendWith(MockitoExtension.class)
 class CouponTest {
 
@@ -17,7 +19,7 @@ class CouponTest {
 			.couponId(1L)
 			.name("Test Coupon")
 			.amount(1000L)
-			.status("ACTIVE")
+			.status(CouponStatus.ACTIVE)
 			.expiredAt(expiredAt)
 			.build();
 	}
