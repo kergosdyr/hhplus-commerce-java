@@ -31,7 +31,7 @@ public class ProductStock extends BaseEntity {
 	private long stock;
 
 	public boolean isSellable(long quantity) {
-		return stock > 0;
+		return stock - quantity >= 0;
 	}
 
 	public long sell(long quantity) {
