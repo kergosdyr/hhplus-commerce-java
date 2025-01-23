@@ -3,14 +3,13 @@ package kr.hhplus.be.server.domain.order;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import kr.hhplus.be.server.domain.payment.Payment;
 import kr.hhplus.be.server.domain.payment.PaymentProcessor;
 import kr.hhplus.be.server.domain.product.ProductStockModifier;
 import kr.hhplus.be.server.domain.user.UserFinder;
 import kr.hhplus.be.server.error.ApiException;
 import kr.hhplus.be.server.error.ErrorType;
+import kr.hhplus.be.server.support.WithLock;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -25,33 +24,32 @@ public class OrderService {
 
 	private final ProductStockModifier productStockModifier;
 
-	@Transactional
-	public OrderPayment order(long userId, List<OrderProduct> orderProducts) {
+	@WithLock(keys = "#orderCommands.![ 'order:product:' + productId ]")
+	public OrderOutput order(long userId, List<OrderCommand> orderCommands) {
 
 		if (userFinder.notExistsByUserId(userId)) {
 			throw new ApiException(ErrorType.USER_NOT_FOUND);
 		}
 
-		Order order = orderGenerator.generate(userId, orderProducts);
-		productStockModifier.sell(orderProducts);
-		Payment payment = paymentProcessor.process(userId, order.getOrderId());
+		var order = orderGenerator.generate(userId, orderCommands);
+		productStockModifier.sell(orderCommands);
+		var paymentProcessOutput = paymentProcessor.process(userId, order.getOrderId());
 
-		return new OrderPayment(order, payment);
+		return new OrderOutput(paymentProcessOutput.order(), paymentProcessOutput.payment());
 
 	}
 
-	@Transactional
-	public OrderPayment orderWithCoupon(long userId, long couponId, List<OrderProduct> orderProducts) {
+	public OrderOutput orderWithCoupon(long userId, long couponId, List<OrderCommand> orderCommands) {
 
 		if (userFinder.notExistsByUserId(userId)) {
 			throw new ApiException(ErrorType.USER_NOT_FOUND);
 		}
 
-		Order order = orderGenerator.generate(userId, orderProducts);
-		productStockModifier.sell(orderProducts);
-		Payment payment = paymentProcessor.processWithCoupon(userId, couponId, order.getOrderId());
+		var order = orderGenerator.generate(userId, orderCommands);
+		productStockModifier.sell(orderCommands);
+		var paymentProcessOutput = paymentProcessor.processWithCoupon(userId, couponId, order.getOrderId());
 
-		return new OrderPayment(order, payment);
+		return new OrderOutput(paymentProcessOutput.order(), paymentProcessOutput.payment());
 
 	}
 }

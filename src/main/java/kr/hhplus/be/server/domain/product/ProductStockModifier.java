@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.hhplus.be.server.config.WithLock;
 import kr.hhplus.be.server.domain.order.OrderCommand;
 import kr.hhplus.be.server.error.ApiException;
 import kr.hhplus.be.server.error.ErrorType;
+import kr.hhplus.be.server.support.WithLock;
 import lombok.RequiredArgsConstructor;
 
 @Component

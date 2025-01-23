@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import kr.hhplus.be.server.enums.UserCouponStatus;
 import kr.hhplus.be.server.error.ApiException;
 import kr.hhplus.be.server.error.ErrorType;
+import kr.hhplus.be.server.support.WithLock;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -21,6 +22,7 @@ public class CouponIssuer {
 	private final UserCouponRepository userCouponRepository;
 
 	@Transactional
+	@WithLock(key = "'coupon_inventory:'.concat(#couponId)")
 	public UserCoupon issue(long userId, long couponId, LocalDateTime issuedAt) {
 
 		var coupon = couponRepository.findById(couponId)
