@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import kr.hhplus.be.server.domain.order.OrderProduct;
+import kr.hhplus.be.server.domain.order.OrderCommand;
 
 public record OrderRequest(
 	@NotNull(message = "userId는 필수값입니다.")
@@ -21,7 +21,7 @@ public record OrderRequest(
 	@Valid // 각 OrderItem 내부 필드도 검증
 	List<OrderItem> orderItems
 ) {
-	public List<OrderProduct> toOrderProducts() {
+	public List<OrderCommand> toOrderProducts() {
 		return orderItems.stream().map(OrderItem::toOrderProduct).collect(Collectors.toList());
 	}
 
@@ -36,8 +36,8 @@ public record OrderRequest(
 		@Min(value = 1, message = "productId는 1 이상의 값이어야 합니다.")
 		long productId
 	) {
-		public OrderProduct toOrderProduct() {
-			return new OrderProduct(this.quantity, this.productId);
+		public OrderCommand toOrderProduct() {
+			return new OrderCommand(this.quantity, this.productId);
 		}
 	}
 }

@@ -15,7 +15,7 @@ import jakarta.validation.Valid;
 import kr.hhplus.be.server.api.config.WebApiResponse;
 import kr.hhplus.be.server.api.request.OrderRequest;
 import kr.hhplus.be.server.api.response.OrderResponse;
-import kr.hhplus.be.server.domain.order.OrderPayment;
+import kr.hhplus.be.server.domain.order.OrderOutput;
 import kr.hhplus.be.server.domain.order.OrderService;
 import lombok.RequiredArgsConstructor;
 
@@ -45,13 +45,13 @@ public class OrderController {
 		@Valid @RequestBody OrderRequest request
 	) {
 		if (request.isWithCoupon()) {
-			OrderPayment orderPayment = orderService.orderWithCoupon(request.userId(), request.couponId(),
+			OrderOutput orderOutput = orderService.orderWithCoupon(request.userId(), request.couponId(),
 				request.toOrderProducts());
-			return WebApiResponse.success(OrderResponse.fromEntity(orderPayment));
+			return WebApiResponse.success(OrderResponse.fromEntity(orderOutput));
 		}
 
-		OrderPayment orderPayment = orderService.order(request.userId(), request.toOrderProducts());
-		return WebApiResponse.success(OrderResponse.fromEntity(orderPayment));
+		OrderOutput orderOutput = orderService.order(request.userId(), request.toOrderProducts());
+		return WebApiResponse.success(OrderResponse.fromEntity(orderOutput));
 
 	}
 }

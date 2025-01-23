@@ -5,7 +5,7 @@ import java.util.List;
 
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderDetail;
-import kr.hhplus.be.server.domain.order.OrderPayment;
+import kr.hhplus.be.server.domain.order.OrderOutput;
 import kr.hhplus.be.server.domain.payment.Payment;
 
 public record OrderResponse(long orderId,
@@ -18,10 +18,10 @@ public record OrderResponse(long orderId,
 							List<OrderItem> orderItems,
 							LocalDateTime createdAt) {
 
-	public static OrderResponse fromEntity(OrderPayment orderPayment) {
+	public static OrderResponse fromEntity(OrderOutput orderOutput) {
 
-		Order order = orderPayment.order();
-		Payment payment = orderPayment.payment();
+		Order order = orderOutput.order();
+		Payment payment = orderOutput.payment();
 		return new OrderResponse(
 			order.getOrderId(),
 			order.getUserId(),

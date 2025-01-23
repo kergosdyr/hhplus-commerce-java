@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import kr.hhplus.be.server.config.IntegrationTest;
 import kr.hhplus.be.server.domain.product.Product;
+import kr.hhplus.be.server.enums.ProductStatus;
 
 class OrderGeneratorIntegrationTest extends IntegrationTest {
 
@@ -21,34 +22,34 @@ class OrderGeneratorIntegrationTest extends IntegrationTest {
 		List<Product> savedProducts = productJpaRepository.saveAll(List.of(Product.builder()
 			.price(1000L)
 			.name("전진 상품1")
-			.status("VALID")
+			.status(ProductStatus.AVAILABLE)
 			.build(), Product.builder()
 			.price(2000L)
 			.name("전진 상품2")
-			.status("VALID")
+			.status(ProductStatus.AVAILABLE)
 			.build()));
 
-		List<OrderProduct> orderProducts = savedProducts.stream()
-			.map(savedProduct -> new OrderProduct(1L, savedProduct.getProductId()))
+		List<OrderCommand> orderCommands = savedProducts.stream()
+			.map(savedProduct -> new OrderCommand(1L, savedProduct.getProductId()))
 			.toList();
 
 		// when
-		Order createdOrder = orderGenerator.generate(userId, orderProducts);
+		Order createdOrder = orderGenerator.generate(userId, orderCommands);
 		List<OrderDetail> orderDetails = orderDetailJpaRepository.findByOrderId(createdOrder.getOrderId());
 
 		// then
 		assertThat(createdOrder).isNotNull();
 		assertThat(createdOrder.getUserId()).isEqualTo(userId);
 
-		assertThat(orderDetails).hasSize(orderProducts.size());
+		assertThat(orderDetails).hasSize(orderCommands.size());
 		assertThat(orderDetails)
-			.hasSize(orderProducts.size())
+			.hasSize(orderCommands.size())
 			.allSatisfy(orderDetail ->
 				assertThat(orderDetail.getOrderId()).isEqualTo(createdOrder.getOrderId())
 			);
 
 		assertThat(orderDetails)
-			.zipSatisfy(orderProducts, (orderDetail, orderProduct) -> {
+			.zipSatisfy(orderCommands, (orderDetail, orderProduct) -> {
 				assertThat(orderDetail.getProductId()).isEqualTo(orderProduct.productId());
 				assertThat(orderDetail.getQuantity()).isEqualTo(orderProduct.quantity());
 			});

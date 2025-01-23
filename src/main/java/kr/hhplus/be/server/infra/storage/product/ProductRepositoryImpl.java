@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductRepository;
-import kr.hhplus.be.server.domain.product.ProductSell;
+import kr.hhplus.be.server.domain.product.ProductSellerOutput;
 import kr.hhplus.be.server.error.ApiException;
 import kr.hhplus.be.server.error.ErrorType;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +39,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 	}
 
 	@Override
-	public List<ProductSell> findAllTopSellers(int days) {
+	public List<ProductSellerOutput> findAllTopSellers(int days) {
 		return productJpaRepository.findAllTopSellers(days);
 	}
 

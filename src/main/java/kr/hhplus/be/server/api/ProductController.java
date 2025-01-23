@@ -20,7 +20,7 @@ import kr.hhplus.be.server.api.config.WebApiResponse;
 import kr.hhplus.be.server.api.response.ProductListResponse;
 import kr.hhplus.be.server.api.response.TopSellerResponse;
 import kr.hhplus.be.server.domain.product.Product;
-import kr.hhplus.be.server.domain.product.ProductSell;
+import kr.hhplus.be.server.domain.product.ProductSellerOutput;
 import kr.hhplus.be.server.domain.product.ProductService;
 import lombok.RequiredArgsConstructor;
 
@@ -83,7 +83,7 @@ public class ProductController {
 		)
 		@Min(value = 3, message = "days는 3 이상의 값이어야 합니다.") @RequestParam(defaultValue = "3") int days
 	) {
-		List<ProductSell> allTopSellers = productService.findAllTopSellers(days);
+		List<ProductSellerOutput> allTopSellers = productService.findAllTopSellers(days);
 		return WebApiResponse.success(TopSellerResponse.fromEntities(days, allTopSellers));
 	}
 }

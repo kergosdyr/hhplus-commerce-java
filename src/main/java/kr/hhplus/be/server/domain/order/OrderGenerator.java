@@ -19,9 +19,9 @@ public class OrderGenerator {
 
 
 	@Transactional
-	public Order generate(long userId, List<OrderProduct> orderProducts) {
+	public Order generate(long userId, List<OrderCommand> orderCommands) {
 
-		List<OrderDetail> orderDetailList = orderProducts.stream().map(orderProduct -> {
+		List<OrderDetail> orderDetailList = orderCommands.stream().map(orderProduct -> {
 
 				Product product = productReader.read(orderProduct.productId());
 

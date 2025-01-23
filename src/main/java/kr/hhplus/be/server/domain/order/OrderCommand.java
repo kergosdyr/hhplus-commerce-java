@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.domain.order;
 
-public record OrderProduct(
+public record OrderCommand(
 	long quantity, long productId
 ) {
 }
