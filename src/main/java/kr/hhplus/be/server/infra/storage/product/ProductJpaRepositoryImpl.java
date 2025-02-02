@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import kr.hhplus.be.server.domain.product.ProductSell;
+import kr.hhplus.be.server.domain.product.ProductSellerOutput;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -23,13 +23,13 @@ public class ProductJpaRepositoryImpl implements ProductQueryDslRepository {
 
 	//TODO 무분별한 N+1 등 조회 성능 문제가 발생할 수 있으므로, 추후 로직 변경 반드시 필요함, 현재는 요구사항은 성능 문제가 없으므로 제외.
 	@Override
-	public List<ProductSell> findAllTopSellers(int days) {
+	public List<ProductSellerOutput> findAllTopSellers(int days) {
 
 		LocalDateTime startDate = LocalDateTime.now().minusDays(days);
 
 		return queryFactory
 			.select(Projections.constructor(
-				ProductSell.class,
+				ProductSellerOutput.class,
 				product,
 				orderDetail.quantity.sum()
 			))

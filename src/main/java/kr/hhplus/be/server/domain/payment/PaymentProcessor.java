@@ -9,6 +9,7 @@ import kr.hhplus.be.server.domain.balanace.BalanceModifier;
 import kr.hhplus.be.server.domain.coupon.CouponApplier;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderReader;
+import kr.hhplus.be.server.support.WithLock;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -26,7 +27,8 @@ public class PaymentProcessor {
 	private final CouponApplier couponApplier;
 
 	@Transactional
-	public Payment process(long userId, long orderId) {
+	@WithLock(key = "'user_id:'.concat(#userId).concat(':order_id:').concat(#orderId)")
+	public PaymentProcessOutput process(long userId, long orderId) {
 
 		Order order = orderReader.read(orderId);
 		order.paid();
@@ -41,12 +43,13 @@ public class PaymentProcessor {
 
 		Payment savedPayment = paymentRepository.save(payment);
 		analyticsSender.send(new AnalyticData(savedPayment.getPaymentId(), orderId, order.getCreatedAt()));
-		return savedPayment;
+		return new PaymentProcessOutput(savedPayment, order);
 
 	}
 
 	@Transactional
-	public Payment processWithCoupon(long userId, long couponId, long orderId) {
+	@WithLock(key = "'user_id:'.concat(#userId).concat(':order_id:').concat(#orderId)")
+	public PaymentProcessOutput processWithCoupon(long userId, long couponId, long orderId) {
 
 		Order order = orderReader.read(orderId);
 		order.paid();
@@ -63,7 +66,7 @@ public class PaymentProcessor {
 
 		Payment savedPayment = paymentRepository.save(payment);
 		analyticsSender.send(new AnalyticData(savedPayment.getPaymentId(), order.getOrderId(), order.getCreatedAt()));
-		return savedPayment;
+		return new PaymentProcessOutput(savedPayment, order);
 
 	}
 }

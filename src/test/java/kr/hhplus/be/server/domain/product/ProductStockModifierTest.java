@@ -14,7 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kr.hhplus.be.server.domain.order.OrderProduct;
+import kr.hhplus.be.server.domain.order.OrderCommand;
 import kr.hhplus.be.server.error.ApiException;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,8 +30,8 @@ class ProductStockModifierTest {
 	@DisplayName("정상 케이스: 재고가 있고(isSellable() == true) -> sell() 호출로 재고 감소")
 	void sell_decreaseStock() {
 		var orderProducts = List.of(
-			new OrderProduct(2L, 1L),
-			new OrderProduct(1L, 2L)
+			new OrderCommand(2L, 1L),
+			new OrderCommand(1L, 2L)
 		);
 
 		var stock1 = ProductStock.builder()
@@ -61,7 +61,7 @@ class ProductStockModifierTest {
 	@Test
 	@DisplayName("재고 정보가 없는 경우 -> PRODUCT_NOT_FOUND 예외")
 	void sell_throwWhenNotFound() {
-		var orderProducts = List.of(new OrderProduct(1L, 999L));
+		var orderProducts = List.of(new OrderCommand(1L, 999L));
 		given(productStockRepository.findByProductId(999L)).willReturn(Optional.empty());
 
 		assertThatThrownBy(() -> productStockModifier.sell(orderProducts))
@@ -72,7 +72,7 @@ class ProductStockModifierTest {
 	@Test
 	@DisplayName("재고가 0이어서 isSellable() == false -> PRODUCT_NO_STOCK 예외")
 	void sell_throwWhenNoStock() {
-		var orderProducts = List.of(new OrderProduct(2L, 1L));
+		var orderProducts = List.of(new OrderCommand(2L, 1L));
 		var stock = ProductStock.builder()
 			.stockId(1L)
 			.productId(1L)

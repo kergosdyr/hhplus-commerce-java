@@ -16,7 +16,7 @@ import kr.hhplus.be.server.api.request.OrderRequest;
 import kr.hhplus.be.server.config.WebMvcTest;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderDetail;
-import kr.hhplus.be.server.domain.order.OrderPayment;
+import kr.hhplus.be.server.domain.order.OrderOutput;
 import kr.hhplus.be.server.domain.payment.Payment;
 import kr.hhplus.be.server.enums.OrderStatus;
 import kr.hhplus.be.server.enums.PaymentStatus;
@@ -65,7 +65,7 @@ class OrderControllerTest extends WebMvcTest {
 			.status(PaymentStatus.PAID)
 			.build();
 
-		var mockOrderPayment = new OrderPayment(mockOrder, mockPayment);
+		var mockOrderPayment = new OrderOutput(mockOrder, mockPayment);
 
 		Mockito.when(orderService.orderWithCoupon(Mockito.anyLong(), Mockito.anyLong(), Mockito.anyList()))
 			.thenReturn(mockOrderPayment);
@@ -135,7 +135,7 @@ class OrderControllerTest extends WebMvcTest {
 			.status(PaymentStatus.PAID)
 			.build();
 
-		var mockOrderPayment = new OrderPayment(mockOrder, mockPayment);
+		var mockOrderPayment = new OrderOutput(mockOrder, mockPayment);
 
 		Mockito.when(orderService.order(Mockito.anyLong(), Mockito.anyList()))
 			.thenReturn(mockOrderPayment);
@@ -194,7 +194,7 @@ class OrderControllerTest extends WebMvcTest {
 		);
 
 		// Mocking (실제 로직이 호출되지 않도록)
-		Mockito.when(orderService.order(Mockito.anyLong(), Mockito.anyList())).thenReturn(new OrderPayment(
+		Mockito.when(orderService.order(Mockito.anyLong(), Mockito.anyList())).thenReturn(new OrderOutput(
 			null, null
 		));
 

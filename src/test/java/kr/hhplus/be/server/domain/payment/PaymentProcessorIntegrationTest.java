@@ -33,7 +33,8 @@ class PaymentProcessorIntegrationTest extends IntegrationTest {
 		Balance savedBalance = balanceJpaRepository.save(balance);
 		Order mockOrder = orderJpaRepository.save(
 			TestUtil.createMockOrder(savedUser.getUserId(), createMockOrderDetails(3, 5000L, 1)));
-		Payment payment = paymentProcessor.process(savedUser.getUserId(), mockOrder.getOrderId());
+		var paymentProcessOutput = paymentProcessor.process(savedUser.getUserId(), mockOrder.getOrderId());
+		Payment payment = paymentProcessOutput.payment();
 		Payment savedPayment = paymentJpaRepository.findById(payment.getPaymentId()).orElseThrow(RuntimeException::new);
 		Balance modifiedBalance = balanceJpaRepository.findById(savedBalance.getBalanceId())
 			.orElseThrow(RuntimeException::new);
@@ -62,8 +63,9 @@ class PaymentProcessorIntegrationTest extends IntegrationTest {
 		UserCoupon userCoupon = TestUtil.createTestUserCoupon(savedUser.getUserId(), savedCoupon.getCouponId());
 		UserCoupon savedUserCoupon = userCouponJpaRepository.save(userCoupon);
 
-		Payment payment = paymentProcessor.processWithCoupon(savedUser.getUserId(), savedCoupon.getCouponId(),
+		var paymentProcessOutput = paymentProcessor.processWithCoupon(savedUser.getUserId(), savedCoupon.getCouponId(),
 			savedMockOrder.getOrderId());
+		Payment payment = paymentProcessOutput.payment();
 		Payment savedPayment = paymentJpaRepository.findById(payment.getPaymentId()).orElseThrow(RuntimeException::new);
 		Balance modifiedBalance = balanceJpaRepository.findById(savedBalance.getBalanceId())
 			.orElseThrow(RuntimeException::new);

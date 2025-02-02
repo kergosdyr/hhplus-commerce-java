@@ -7,20 +7,12 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import kr.hhplus.be.server.config.IntegrationTest;
-import kr.hhplus.be.server.domain.order.OrderProduct;
+import kr.hhplus.be.server.domain.order.OrderCommand;
 import kr.hhplus.be.server.error.ApiException;
-import kr.hhplus.be.server.infra.storage.product.ProductStockJpaRepository;
 
 class ProductStockModifierIntegrationTest extends IntegrationTest {
-
-	@Autowired
-	private ProductStockModifier productStockModifier;
-
-	@Autowired
-	private ProductStockJpaRepository productStockRepository;
 
 	@Test
 	@DisplayName("정상 케이스: DB에 저장된 재고가 감소")
@@ -38,8 +30,8 @@ class ProductStockModifierIntegrationTest extends IntegrationTest {
 		ProductStock savedStock2 = productStockRepository.save(stock2);
 
 		var orderProducts = List.of(
-			new OrderProduct(1L, 1L),
-			new OrderProduct(2L, 2L)
+			new OrderCommand(1L, 1L),
+			new OrderCommand(2L, 2L)
 		);
 
 		productStockModifier.sell(orderProducts);
@@ -54,7 +46,7 @@ class ProductStockModifierIntegrationTest extends IntegrationTest {
 	@Test
 	@DisplayName("재고 정보가 없는 경우 -> PRODUCT_NOT_FOUND 예외")
 	void sell_throwNotFoundInDb() {
-		var orderProducts = List.of(new OrderProduct(1L, 999L));
+		var orderProducts = List.of(new OrderCommand(1L, 999L));
 
 		assertThatThrownBy(() -> productStockModifier.sell(orderProducts))
 			.isInstanceOf(ApiException.class)
@@ -71,7 +63,7 @@ class ProductStockModifierIntegrationTest extends IntegrationTest {
 
 		productStockRepository.save(noStock);
 
-		var orderProducts = List.of(new OrderProduct(2L, 3L));
+		var orderProducts = List.of(new OrderCommand(2L, 3L));
 
 		assertThatThrownBy(() -> productStockModifier.sell(orderProducts))
 			.isInstanceOf(ApiException.class)

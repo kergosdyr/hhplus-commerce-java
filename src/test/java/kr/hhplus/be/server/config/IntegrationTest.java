@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.ApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -15,6 +16,7 @@ import kr.hhplus.be.server.domain.coupon.CouponIssuer;
 import kr.hhplus.be.server.domain.order.OrderGenerator;
 import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.payment.PaymentProcessor;
+import kr.hhplus.be.server.domain.product.ProductStockModifier;
 import kr.hhplus.be.server.infra.storage.balance.BalanceJpaRepository;
 import kr.hhplus.be.server.infra.storage.coupon.CouponInventoryJpaRepository;
 import kr.hhplus.be.server.infra.storage.coupon.CouponJpaRepository;
@@ -33,6 +35,7 @@ public class IntegrationTest {
 	protected ObjectMapper objectMapper;
 	@Autowired
 	protected ProductStockJpaRepository productStockJpaRepository;
+
 	@LocalServerPort
 	int port;
 
@@ -69,6 +72,9 @@ public class IntegrationTest {
 	@Autowired
 	protected CouponJpaRepository couponJpaRepository;
 
+	@Autowired
+	protected ApplicationContext applicationContext;
+
 
 	@Autowired
 	protected UserCouponJpaRepository userCouponJpaRepository;
@@ -84,6 +90,13 @@ public class IntegrationTest {
 
 	@Autowired
 	protected CouponIssuer couponIssuer;
+
+	@Autowired
+	protected ProductStockModifier productStockModifier;
+
+	@Autowired
+	protected ProductStockJpaRepository productStockRepository;
+
 
 	@BeforeEach
 	void setUp() {

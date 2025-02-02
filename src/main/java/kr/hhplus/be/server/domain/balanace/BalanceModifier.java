@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.hhplus.be.server.error.ApiException;
 import kr.hhplus.be.server.error.ErrorType;
+import kr.hhplus.be.server.support.WithLock;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -14,6 +15,7 @@ public class BalanceModifier {
 	private final BalanceFinder balanceFinder;
 
 	@Transactional
+	@WithLock(key = "'balance:'.concat(#userId)")
 	public Balance charge(long userId, long amount) {
 		var balance = balanceFinder.findByUserId(userId);
 
@@ -22,6 +24,7 @@ public class BalanceModifier {
 	}
 
 	@Transactional
+	@WithLock(key = "'balance:'.concat(#userId)")
 	public Balance use(long userId, long amount) {
 		var balance = balanceFinder.findByUserId(userId);
 

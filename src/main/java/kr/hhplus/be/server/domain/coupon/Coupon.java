@@ -16,6 +16,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import kr.hhplus.be.server.domain.BaseEntity;
+import kr.hhplus.be.server.enums.CouponStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,7 +42,7 @@ public class Coupon extends BaseEntity {
 	private long amount;
 
 	@Column(nullable = false, length = 50)
-	private String status;
+	private CouponStatus status;
 
 	@Column(nullable = false)
 	private LocalDateTime expiredAt;

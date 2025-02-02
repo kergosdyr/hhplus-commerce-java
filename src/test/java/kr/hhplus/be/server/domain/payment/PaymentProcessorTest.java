@@ -81,7 +81,7 @@ class PaymentProcessorTest {
 		when(orderReader.read(orderId)).thenReturn(mockOrder);
 
 		// when
-		Payment result = paymentProcessor.process(userId, mockOrder.getOrderId());
+		var result = paymentProcessor.process(userId, mockOrder.getOrderId());
 
 		// then
 		verify(balanceModifier, times(1)).use(userId, totalPrice);
@@ -93,7 +93,7 @@ class PaymentProcessorTest {
 		assertThat(capturedPayment.getOrderId()).isEqualTo(orderId);
 		assertThat(capturedPayment.getPaymentAmount()).isEqualTo(totalPrice);
 
-		assertThat(result).isEqualTo(savedPayment);
+		assertThat(result.payment()).isEqualTo(savedPayment);
 	}
 
 	@Test
@@ -123,7 +123,7 @@ class PaymentProcessorTest {
 		when(orderReader.read(orderId)).thenReturn(mockOrder);
 
 		// when
-		Payment result = paymentProcessor.processWithCoupon(userId, couponId, mockOrder.getOrderId());
+		var result = paymentProcessor.processWithCoupon(userId, couponId, mockOrder.getOrderId());
 
 		verify(balanceModifier, times(1)).use(userId, couponAppliedPrice);
 
@@ -135,7 +135,7 @@ class PaymentProcessorTest {
 		assertThat(capturedPayment.getUserId()).isEqualTo(userId);
 		assertThat(capturedPayment.getPaymentAmount()).isEqualTo(couponAppliedPrice);
 		assertThat(capturedPayment.getCouponAppliedPrice()).isEqualTo(couponAppliedPrice);
-		assertThat(result).isEqualTo(savedPayment);
+		assertThat(result.payment()).isEqualTo(savedPayment);
 	}
 
 }

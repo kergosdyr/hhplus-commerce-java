@@ -35,8 +35,8 @@ class OrderGeneratorTest {
 	void shouldGenerateOrderWithOrderDetailList() {
 
 		var orderProducts = List.of(
-			new OrderProduct(2L, 1L),
-			new OrderProduct(1L, 2L));
+			new OrderCommand(2L, 1L),
+			new OrderCommand(1L, 2L));
 
 		when(orderRepository.save(any(Order.class))).thenReturn(
 			Order.builder()

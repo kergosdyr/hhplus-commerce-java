@@ -2,9 +2,9 @@ package kr.hhplus.be.server.infra.storage.product;
 
 import java.util.List;
 
-import kr.hhplus.be.server.domain.product.ProductSell;
+import kr.hhplus.be.server.domain.product.ProductSellerOutput;
 
 public interface ProductQueryDslRepository {
 
-	List<ProductSell> findAllTopSellers(int days);
+	List<ProductSellerOutput> findAllTopSellers(int days);
 }

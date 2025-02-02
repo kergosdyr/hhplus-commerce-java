@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
+import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
+
 import kr.hhplus.be.server.domain.balanace.Balance;
 import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.CouponInventory;
@@ -14,7 +16,9 @@ import kr.hhplus.be.server.domain.order.OrderDetail;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductStock;
 import kr.hhplus.be.server.domain.user.User;
+import kr.hhplus.be.server.enums.CouponStatus;
 import kr.hhplus.be.server.enums.OrderStatus;
+import kr.hhplus.be.server.enums.ProductStatus;
 import kr.hhplus.be.server.enums.UserCouponStatus;
 
 public abstract class TestUtil {
@@ -46,7 +50,7 @@ public abstract class TestUtil {
 			.amount(1000L)
 			.expiredAt(expiredAt)
 			.name("전진 쿠폰")
-			.status("VALID")
+			.status(CouponStatus.ACTIVE)
 			.build();
 	}
 
@@ -86,7 +90,7 @@ public abstract class TestUtil {
 		return Product.builder()
 			.name(name)
 			.price(price)
-			.status("AVAILABLE")
+			.status(ProductStatus.AVAILABLE)
 			.build();
 	}
 
@@ -108,4 +112,9 @@ public abstract class TestUtil {
 			.build()).collect(Collectors.toList());
 	}
 
+	public static <T> T proxy(Object aspectInstance, T target) {
+		AspectJProxyFactory factory = new AspectJProxyFactory(target);
+		factory.addAspect(aspectInstance);
+		return factory.getProxy();
+	}
 }
