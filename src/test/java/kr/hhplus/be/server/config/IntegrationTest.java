@@ -1,26 +1,33 @@
 package kr.hhplus.be.server.config;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationContext;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.restassured.RestAssured;
-import kr.hhplus.be.server.domain.balanace.BalanceFinder;
 import kr.hhplus.be.server.domain.balanace.BalanceModifier;
+import kr.hhplus.be.server.domain.balanace.BalanceReader;
 import kr.hhplus.be.server.domain.balanace.BalanceService;
 import kr.hhplus.be.server.domain.coupon.CouponIssuer;
+import kr.hhplus.be.server.domain.coupon.UserCouponIssueScheduler;
+import kr.hhplus.be.server.domain.coupon.UserCouponValidator;
 import kr.hhplus.be.server.domain.order.OrderGenerator;
 import kr.hhplus.be.server.domain.order.OrderService;
-import kr.hhplus.be.server.domain.payment.PaymentProcessor;
+import kr.hhplus.be.server.domain.payment.PaymentService;
+import kr.hhplus.be.server.domain.product.ProductFinder;
+import kr.hhplus.be.server.domain.product.ProductService;
 import kr.hhplus.be.server.domain.product.ProductStockModifier;
 import kr.hhplus.be.server.infra.storage.balance.BalanceJpaRepository;
-import kr.hhplus.be.server.infra.storage.coupon.CouponInventoryJpaRepository;
 import kr.hhplus.be.server.infra.storage.coupon.CouponJpaRepository;
 import kr.hhplus.be.server.infra.storage.coupon.UserCouponJpaRepository;
+import kr.hhplus.be.server.infra.storage.coupon.UserCouponRedissonRepository;
 import kr.hhplus.be.server.infra.storage.order.OrderDetailJpaRepository;
 import kr.hhplus.be.server.infra.storage.order.OrderJpaRepository;
 import kr.hhplus.be.server.infra.storage.payment.PaymentJpaRepository;
@@ -40,13 +47,10 @@ public class IntegrationTest {
 	int port;
 
 	@Autowired
-	protected CouponInventoryJpaRepository couponInventoryJpaRepository;
-
-	@Autowired
 	protected BalanceJpaRepository balanceJpaRepository;
 
 	@Autowired
-	protected BalanceFinder balanceFinder;
+	protected BalanceReader balanceReader;
 
 	@Autowired
 	protected OrderService orderService;
@@ -58,7 +62,7 @@ public class IntegrationTest {
 	protected OrderDetailJpaRepository orderDetailJpaRepository;
 
 	@Autowired
-	protected PaymentProcessor paymentProcessor;
+	protected PaymentService paymentService;
 
 	@Autowired
 	protected BalanceModifier balanceModifier;
@@ -97,6 +101,26 @@ public class IntegrationTest {
 	@Autowired
 	protected ProductStockJpaRepository productStockRepository;
 
+	@Autowired
+	protected UserCouponIssueScheduler userCouponIssueScheduler;
+
+	@Autowired
+	protected RedissonClient redissonClient;
+
+	@Autowired
+	protected UserCouponRedissonRepository userCouponRedissonRepository;
+
+	@Autowired
+	protected UserCouponValidator userCouponValidator;
+
+	@Autowired
+	protected ProductService productService;
+
+	@MockitoSpyBean
+	protected ProductFinder productFinder;
+
+	@Autowired
+	protected CacheManager redissonCacheManager;
 
 	@BeforeEach
 	void setUp() {
@@ -105,7 +129,6 @@ public class IntegrationTest {
 
 	@BeforeEach
 	void init() {
-		couponInventoryJpaRepository.deleteAllInBatch();
 		couponJpaRepository.deleteAllInBatch();
 		orderJpaRepository.deleteAllInBatch();
 		balanceJpaRepository.deleteAllInBatch();
@@ -115,5 +138,7 @@ public class IntegrationTest {
 		userCouponJpaRepository.deleteAllInBatch();
 		userJpaRepository.deleteAllInBatch();
 		productStockJpaRepository.deleteAllInBatch();
+		redissonClient.getKeys().flushall();
 	}
+
 }

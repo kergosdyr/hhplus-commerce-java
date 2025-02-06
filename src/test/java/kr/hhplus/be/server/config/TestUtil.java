@@ -5,11 +5,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
+import org.redisson.api.RAtomicLong;
+import org.redisson.api.RedissonClient;
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
 
 import kr.hhplus.be.server.domain.balanace.Balance;
 import kr.hhplus.be.server.domain.coupon.Coupon;
-import kr.hhplus.be.server.domain.coupon.CouponInventory;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderDetail;
@@ -19,6 +20,7 @@ import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.enums.CouponStatus;
 import kr.hhplus.be.server.enums.OrderStatus;
 import kr.hhplus.be.server.enums.ProductStatus;
+import kr.hhplus.be.server.enums.RedisKeyPrefix;
 import kr.hhplus.be.server.enums.UserCouponStatus;
 
 public abstract class TestUtil {
@@ -54,10 +56,12 @@ public abstract class TestUtil {
 			.build();
 	}
 
-	public static CouponInventory createTestCouponInventory(long couponId, long quantity) {
-		return CouponInventory.builder()
-			.couponId(couponId)
-			.quantity(quantity)
+	public static Coupon createTestCouponWithInventory(LocalDateTime expiredAt) {
+		return Coupon.builder()
+			.amount(1000L)
+			.expiredAt(expiredAt)
+			.name("전진 쿠폰")
+			.status(CouponStatus.ACTIVE)
 			.build();
 	}
 
@@ -117,4 +121,11 @@ public abstract class TestUtil {
 		factory.addAspect(aspectInstance);
 		return factory.getProxy();
 	}
+
+	public static RAtomicLong addAndGetCouponCount(RedissonClient redissonClient, long couponId, long count) {
+		RAtomicLong couponCounter = redissonClient.getAtomicLong(RedisKeyPrefix.COUPON.getKey(couponId));
+		couponCounter.addAndGet(count);
+		return couponCounter;
+	}
+
 }
