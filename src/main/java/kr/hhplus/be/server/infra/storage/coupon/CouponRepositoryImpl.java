@@ -14,10 +14,20 @@ public class CouponRepositoryImpl implements CouponRepository {
 
 	private final CouponJpaRepository couponJpaRepository;
 
+	private final CouponRedissonRepository couponRedissonRepository;
+
+
+
 	@Override
 	public Optional<Coupon> findById(long couponId) {
 
 		return couponJpaRepository.findById(couponId);
 	}
 
+	@Override
+	public void issue(long couponId) {
+
+		couponRedissonRepository.issue(couponId);
+
+	}
 }
