@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class BalanceModifierTest {
 
 	@Mock
-	BalanceFinder balanceFinder;
+	BalanceReader balanceReader;
 
 	@InjectMocks
 	BalanceModifier balanceModifier;
@@ -26,7 +26,7 @@ class BalanceModifierTest {
 	void shouldChargeBalance() {
 
 		// given
-		when(balanceFinder.findByUserId(1L)).thenReturn(
+		when(balanceReader.readByUserId(1L)).thenReturn(
 			createTestBalance()
 		);
 
@@ -43,7 +43,7 @@ class BalanceModifierTest {
 	void shouldUseWhenBalanceExist() {
 
 		//given
-		given(balanceFinder.findByUserId(1L)).willReturn(createTestBalance());
+		given(balanceReader.readByUserId(1L)).willReturn(createTestBalance());
 
 		//when
 		Balance usedBalance = balanceModifier.use(1L, 1000L);

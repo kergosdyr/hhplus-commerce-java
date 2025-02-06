@@ -16,13 +16,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kr.hhplus.be.server.error.ApiException;
 
 @ExtendWith(MockitoExtension.class)
-class BalanceFinderTest {
+class BalanceReaderTest {
 
 	@Mock
 	BalanceRepository balanceRepository;
 
 	@InjectMocks
-	BalanceFinder balanceFinder;
+	BalanceReader balanceReader;
 
 	@Test
 	@DisplayName("잔액이 존재하지 않는다면 ApiException이 발생한다")
@@ -32,9 +32,8 @@ class BalanceFinderTest {
 		given(balanceRepository.findByUserId(1L)).willReturn(Optional.empty());
 
 		// when
-		assertThatThrownBy(() -> {
-			balanceFinder.findByUserId(1L);
-		}).isInstanceOf(ApiException.class).hasMessageContaining("잔액 충전 처리 중 오류가 발생했습니다.");
+		assertThatThrownBy(() -> balanceReader.readByUserId(1L)).isInstanceOf(ApiException.class)
+			.hasMessageContaining("잔액 충전 처리 중 오류가 발생했습니다.");
 
 	}
 
@@ -50,7 +49,7 @@ class BalanceFinderTest {
 		given(balanceRepository.findByUserId(1L)).willReturn(Optional.of(givenBalance));
 
 		//when
-		assertThat(balanceFinder.findByUserId(1L)).isEqualTo(givenBalance);
+		assertThat(balanceReader.readByUserId(1L)).isEqualTo(givenBalance);
 
 	}
 

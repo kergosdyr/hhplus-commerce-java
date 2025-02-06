@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 public class BalanceService {
 
 	private final BalanceModifier balanceModifier;
-	private final BalanceFinder balanceFinder;
+	private final BalanceReader balanceReader;
 	private final UserFinder userFinder;
 
 	public Balance charge(long userId, Long amount) {
@@ -31,7 +31,7 @@ public class BalanceService {
 			throw new ApiException(ErrorType.USER_NOT_FOUND);
 		}
 
-		return balanceFinder.findByUserId(userId);
+		return balanceReader.readByUserId(userId);
 
 	}
 
