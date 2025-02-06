@@ -1,7 +1,6 @@
 package kr.hhplus.be.server.api;
 
 import static kr.hhplus.be.server.config.TestUtil.createTestCoupon;
-import static kr.hhplus.be.server.config.TestUtil.createTestCouponInventory;
 import static kr.hhplus.be.server.config.TestUtil.createTestUser;
 import static kr.hhplus.be.server.config.TestUtil.createTestUserCoupon;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,14 +11,15 @@ import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.redisson.api.RAtomicLong;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import io.restassured.RestAssured;
 import kr.hhplus.be.server.api.request.CouponIssueRequest;
 import kr.hhplus.be.server.config.IntegrationTest;
+import kr.hhplus.be.server.config.TestUtil;
 import kr.hhplus.be.server.domain.coupon.Coupon;
-import kr.hhplus.be.server.domain.coupon.CouponInventory;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.domain.user.User;
 
@@ -33,8 +33,7 @@ class CouponControllerIntegrationTest extends IntegrationTest {
 		userJpaRepository.save(user);
 		Coupon coupon = createTestCoupon(LocalDateTime.now().plusDays(1L));
 		Coupon savedCoupon = couponJpaRepository.save(coupon);
-		CouponInventory couponInventory = createTestCouponInventory(savedCoupon.getCouponId(), 30L);
-		couponInventoryJpaRepository.save(couponInventory);
+		RAtomicLong couponCounter = TestUtil.addAndGetCouponCount(redissonClient, savedCoupon.getCouponId(), 30L);
 
 		// given
 		var request = new CouponIssueRequest(user.getUserId(), coupon.getCouponId(), LocalDateTime.now());
@@ -53,10 +52,10 @@ class CouponControllerIntegrationTest extends IntegrationTest {
 			.jsonPath();
 
 		// then
+		userCouponIssueScheduler.issueAllCouponWait();
 		List<UserCoupon> allUserCoupon = userCouponJpaRepository.findAllByUserId(user.getUserId());
-		assertThat(response.getLong("data.userCouponId")).isEqualTo(allUserCoupon.get(0).getUserCouponId());
-		assertThat(response.getLong("data.userId")).isEqualTo(user.getUserId());
-		assertThat(response.getLong("data.couponId")).isEqualTo(coupon.getCouponId());
+		assertThat(response.getLong("data.userId")).isEqualTo(allUserCoupon.get(0).getUserId());
+		assertThat(response.getLong("data.couponId")).isEqualTo(allUserCoupon.get(0).getCouponId());
 		assertThat(response.getString("data.status")).isEqualTo("AVAILABLE");
 		assertThat(response.getString("data.issuedAt")).isNotNull();
 
@@ -71,8 +70,7 @@ class CouponControllerIntegrationTest extends IntegrationTest {
 		Coupon coupon = createTestCoupon(LocalDateTime.of(2025, 1, 2, 0, 0));
 		Coupon savedCoupon = couponJpaRepository.save(coupon);
 		UserCoupon testUserCoupon = createTestUserCoupon(user.getUserId(), savedCoupon.getCouponId());
-		CouponInventory couponInventory = createTestCouponInventory(savedCoupon.getCouponId(), 30L);
-		couponInventoryJpaRepository.save(couponInventory);
+		RAtomicLong couponCounter = TestUtil.addAndGetCouponCount(redissonClient, savedCoupon.getCouponId(), 30L);
 		userCouponJpaRepository.save(testUserCoupon);
 
 		// when & then
@@ -97,4 +95,5 @@ class CouponControllerIntegrationTest extends IntegrationTest {
 		Assertions.assertThat(response.getBoolean("data.coupons[0].isUsed")).isFalse();
 
 	}
+
 }
