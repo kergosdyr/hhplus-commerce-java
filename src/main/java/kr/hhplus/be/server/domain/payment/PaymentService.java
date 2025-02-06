@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class PaymentProcessor {
+public class PaymentService {
 
 	private final BalanceModifier balanceModifier;
 
@@ -28,7 +28,7 @@ public class PaymentProcessor {
 
 	@Transactional
 	@WithLock(key = "'user_id:'.concat(#userId).concat(':order_id:').concat(#orderId)")
-	public PaymentProcessOutput process(long userId, long orderId) {
+	public PaymentOutput pay(long userId, long orderId) {
 
 		Order order = orderReader.read(orderId);
 		order.paid();
@@ -43,13 +43,13 @@ public class PaymentProcessor {
 
 		Payment savedPayment = paymentRepository.save(payment);
 		analyticsSender.send(new AnalyticData(savedPayment.getPaymentId(), orderId, order.getCreatedAt()));
-		return new PaymentProcessOutput(savedPayment, order);
+		return new PaymentOutput(savedPayment, order);
 
 	}
 
 	@Transactional
 	@WithLock(key = "'user_id:'.concat(#userId).concat(':order_id:').concat(#orderId)")
-	public PaymentProcessOutput processWithCoupon(long userId, long couponId, long orderId) {
+	public PaymentOutput payWithCoupon(long userId, long couponId, long orderId) {
 
 		Order order = orderReader.read(orderId);
 		order.paid();
@@ -66,7 +66,7 @@ public class PaymentProcessor {
 
 		Payment savedPayment = paymentRepository.save(payment);
 		analyticsSender.send(new AnalyticData(savedPayment.getPaymentId(), order.getOrderId(), order.getCreatedAt()));
-		return new PaymentProcessOutput(savedPayment, order);
+		return new PaymentOutput(savedPayment, order);
 
 	}
 }

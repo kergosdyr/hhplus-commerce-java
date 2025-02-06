@@ -17,22 +17,19 @@ public class OrderGenerator {
 
 	private final ProductReader productReader;
 
-
 	@Transactional
 	public Order generate(long userId, List<OrderCommand> orderCommands) {
 
-		List<OrderDetail> orderDetailList = orderCommands.stream().map(orderProduct -> {
-
-				Product product = productReader.read(orderProduct.productId());
-
-				return OrderDetail.builder()
-					.productId(product.getProductId())
-				.quantity(orderProduct.quantity())
-					.productPrice(product.getPrice())
-					.build();
-
-			}
-		).toList();
+		List<OrderDetail> orderDetailList = orderCommands.stream()
+			.map(orderCommand -> {
+					Product product = productReader.read(orderCommand.productId());
+					return OrderDetail.builder()
+						.productId(product.getProductId())
+						.quantity(orderCommand.quantity())
+						.productPrice(product.getPrice())
+						.build();
+				}
+			).toList();
 
 		Order order = Order.builder()
 			.userId(userId)
