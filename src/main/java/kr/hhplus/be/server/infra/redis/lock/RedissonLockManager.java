@@ -1,10 +1,10 @@
 package kr.hhplus.be.server.infra.redis.lock;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import kr.hhplus.be.server.support.LockManager;
@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-@Profile("redisson")
 public class RedissonLockManager implements LockManager {
 
 	private static final String LOCK_PREFIX = "redisson:";
@@ -34,7 +33,7 @@ public class RedissonLockManager implements LockManager {
 			boolean isLocked = rLock.tryLock(WAIT_TIME_SECONDS, EXPIRE_TIME_SECONDS, TimeUnit.SECONDS);
 			if (isLocked) {
 				log.info("Lock acquired: {}", getKey(lockKey));
-				return rLock.getName(); // 락 이름을 반환
+				return rLock.getName(); // 락 이름 반환
 			}
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
@@ -44,11 +43,46 @@ public class RedissonLockManager implements LockManager {
 	}
 
 	@Override
+	public List<String> acquireAll(List<String> lockKeys) {
+		List<RLock> locks = lockKeys.stream()
+			.map(this::getKey)
+			.map(redissonClient::getLock)
+			.toList();
+		RLock multiLock = redissonClient.getMultiLock(locks.toArray(new RLock[0]));
+		try {
+			boolean isLocked = multiLock.tryLock(WAIT_TIME_SECONDS, EXPIRE_TIME_SECONDS, TimeUnit.SECONDS);
+			if (isLocked) {
+				log.info("MultiLock acquired for keys: {}", lockKeys);
+				return lockKeys;
+			}
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			log.error("Failed to acquire multi-lock for keys: {}", lockKeys, e);
+		}
+		return List.of();
+	}
+
+	@Override
 	public void release(String lockKey) {
 		RLock rLock = redissonClient.getLock(getKey(lockKey));
 		if (rLock.isHeldByCurrentThread()) {
 			rLock.unlock();
 			log.info("Lock released: {}", getKey(lockKey));
+		}
+	}
+
+	@Override
+	public void releaseAll(List<String> lockKeys) {
+		List<RLock> locks = lockKeys.stream()
+			.map(this::getKey)
+			.map(redissonClient::getLock)
+			.toList();
+		RLock multiLock = redissonClient.getMultiLock(locks.toArray(new RLock[0]));
+		try {
+			multiLock.unlock();
+			log.info("MultiLock released for keys: {}", lockKeys);
+		} catch (IllegalMonitorStateException e) {
+			log.error("Failed to release multi-lock for keys: {}", lockKeys, e);
 		}
 	}
 }
