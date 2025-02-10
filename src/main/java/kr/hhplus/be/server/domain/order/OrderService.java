@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import kr.hhplus.be.server.domain.payment.PaymentProcessor;
+import kr.hhplus.be.server.domain.payment.PaymentService;
 import kr.hhplus.be.server.domain.product.ProductStockModifier;
 import kr.hhplus.be.server.domain.user.UserFinder;
 import kr.hhplus.be.server.error.ApiException;
@@ -20,11 +20,11 @@ public class OrderService {
 
 	private final UserFinder userFinder;
 
-	private final PaymentProcessor paymentProcessor;
+	private final PaymentService paymentService;
 
 	private final ProductStockModifier productStockModifier;
 
-	@WithLock(keys = "#orderCommands.![ 'order:product:' + productId ]")
+	@WithLock(key = "#orderCommands.![ 'order:product:' + productId ]")
 	public OrderOutput order(long userId, List<OrderCommand> orderCommands) {
 
 		if (userFinder.notExistsByUserId(userId)) {
@@ -33,7 +33,7 @@ public class OrderService {
 
 		var order = orderGenerator.generate(userId, orderCommands);
 		productStockModifier.sell(orderCommands);
-		var paymentProcessOutput = paymentProcessor.process(userId, order.getOrderId());
+		var paymentProcessOutput = paymentService.pay(userId, order.getOrderId());
 
 		return new OrderOutput(paymentProcessOutput.order(), paymentProcessOutput.payment());
 
@@ -47,7 +47,7 @@ public class OrderService {
 
 		var order = orderGenerator.generate(userId, orderCommands);
 		productStockModifier.sell(orderCommands);
-		var paymentProcessOutput = paymentProcessor.processWithCoupon(userId, couponId, order.getOrderId());
+		var paymentProcessOutput = paymentService.payWithCoupon(userId, couponId, order.getOrderId());
 
 		return new OrderOutput(paymentProcessOutput.order(), paymentProcessOutput.payment());
 

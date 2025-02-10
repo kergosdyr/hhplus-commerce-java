@@ -1,7 +1,6 @@
 package kr.hhplus.be.server.domain.coupon;
 
 import static kr.hhplus.be.server.config.TestUtil.createTestCoupon;
-import static kr.hhplus.be.server.config.TestUtil.createTestCouponInventory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -9,6 +8,7 @@ import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.redisson.api.RAtomicLong;
 
 import kr.hhplus.be.server.config.IntegrationTest;
 import kr.hhplus.be.server.config.TestUtil;
@@ -22,8 +22,6 @@ class CouponIssuerIntegrationTest extends IntegrationTest {
 		//given
 		Coupon coupon = createTestCoupon(LocalDateTime.of(2024, 12, 31, 0, 0));
 		Coupon savedCoupon = couponJpaRepository.save(coupon);
-		CouponInventory couponInventory = createTestCouponInventory(savedCoupon.getCouponId(), 10L);
-		CouponInventory savedCouponInventory = couponInventoryJpaRepository.save(couponInventory);
 
 		//when && then
 		assertThatThrownBy(() -> {
@@ -38,8 +36,6 @@ class CouponIssuerIntegrationTest extends IntegrationTest {
 		//given
 		Coupon coupon = createTestCoupon(LocalDateTime.of(2024, 1, 2, 0, 0));
 		Coupon savedCoupon = couponJpaRepository.save(coupon);
-		CouponInventory couponInventory = createTestCouponInventory(savedCoupon.getCouponId(), 10L);
-		CouponInventory savedCouponInventory = couponInventoryJpaRepository.save(couponInventory);
 
 		UserCoupon userCoupon = TestUtil.createTestUserCoupon(1L, savedCoupon.getCouponId());
 
@@ -57,8 +53,6 @@ class CouponIssuerIntegrationTest extends IntegrationTest {
 		//given
 		Coupon coupon = createTestCoupon(LocalDateTime.of(2024, 1, 2, 0, 0));
 		Coupon savedCoupon = couponJpaRepository.save(coupon);
-		CouponInventory couponInventory = createTestCouponInventory(savedCoupon.getCouponId(), 10L);
-		CouponInventory savedCouponInventory = couponInventoryJpaRepository.save(couponInventory);
 
 		//when && then
 		assertThatThrownBy(() -> {
@@ -68,26 +62,26 @@ class CouponIssuerIntegrationTest extends IntegrationTest {
 	}
 
 	@Test
-	@DisplayName("정상적으로 호출되면 쿠폰이 발행되고 수량이 감소한다")
+	@DisplayName("정상적으로 호출되고 스케쥴러가 호출되면 쿠폰이 정상적으로 감소한다.")
 	void shouldIssueCouponAndReduceQuantityWhenCalledSuccessfully() {
 		//given
 
 		Coupon coupon = createTestCoupon(LocalDateTime.now().plusDays(1L));
 		Coupon savedCoupon = couponJpaRepository.save(coupon);
-		CouponInventory couponInventory = createTestCouponInventory(savedCoupon.getCouponId(), 10L);
-		CouponInventory savedCouponInventory = couponInventoryJpaRepository.save(couponInventory);
+		RAtomicLong couponCounter = TestUtil.addAndGetCouponCount(redissonClient, savedCoupon.getCouponId(), 10L);
+		long beforeCouponCounter = couponCounter.get();
 
 		//when
 		UserCoupon issuedUserCoupon = couponIssuer.issue(1L, savedCoupon.getCouponId(),
 			LocalDateTime.of(2025, 1, 1, 0, 0));
 		Coupon updatedCoupon = couponJpaRepository.findById(savedCoupon.getCouponId())
 			.orElseThrow(RuntimeException::new);
-		var byCouponIdWithLock = couponInventoryJpaRepository.findByCouponId(updatedCoupon.getCouponId()).get();
+		userCouponIssueScheduler.issueAllCouponWait();
 
 		//then
 		assertThat(issuedUserCoupon.getCouponId()).isEqualTo(updatedCoupon.getCouponId());
 		assertThat(issuedUserCoupon.getAmount()).isEqualTo(updatedCoupon.getAmount());
-		assertThat(savedCouponInventory.getQuantity()).isEqualTo(byCouponIdWithLock.getQuantity() + 1);
+		assertThat(beforeCouponCounter).isEqualTo(couponCounter.get() + 1);
 
 	}
 

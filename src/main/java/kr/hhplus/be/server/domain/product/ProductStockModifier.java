@@ -18,7 +18,7 @@ public class ProductStockModifier {
 	private final ProductStockRepository productStockRepository;
 
 	@Transactional
-	@WithLock(keys = "#orderCommands.![ 'product:' + productId ]")
+	@WithLock(key = "#orderCommands.![ 'product:' + productId ]")
 	public List<ProductStock> sell(List<OrderCommand> orderCommands) {
 
 		return orderCommands.stream().map(orderProduct -> {

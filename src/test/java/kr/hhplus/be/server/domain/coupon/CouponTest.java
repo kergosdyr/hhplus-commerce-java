@@ -14,7 +14,7 @@ import kr.hhplus.be.server.enums.CouponStatus;
 @ExtendWith(MockitoExtension.class)
 class CouponTest {
 
-	private static Coupon createCoupon(CouponInventory couponInventory, LocalDateTime expiredAt) {
+	private static Coupon createCoupon(LocalDateTime expiredAt) {
 		return Coupon.builder()
 			.couponId(1L)
 			.name("Test Coupon")
@@ -24,23 +24,13 @@ class CouponTest {
 			.build();
 	}
 
-	private static CouponInventory createCouponInventory(long inventoryId, long quantity) {
-		return CouponInventory.builder()
-			.inventoryId(inventoryId)
-			.couponId(inventoryId)
-			.quantity(quantity)   // 충분한 재고
-			.build();
-	}
-
 	@Test
 	@DisplayName("만료 시간이 현재보다 이전이라면, isIssuable()는 false를 반환한다.")
 	void shouldReturnFalseWhenExpired() {
 		// given
 		LocalDateTime issuedAt = LocalDateTime.of(2025, 1, 2, 0, 0, 0, 0);
 
-		CouponInventory couponInventory = createCouponInventory(1L, 10L);
-
-		Coupon coupon = createCoupon(couponInventory, LocalDateTime.of(2024, 12, 30, 0, 0, 0, 0));
+		Coupon coupon = createCoupon(LocalDateTime.of(2024, 12, 30, 0, 0, 0, 0));
 
 		// when
 		boolean result = coupon.isIssuable(issuedAt);
@@ -55,9 +45,7 @@ class CouponTest {
 		// given
 		LocalDateTime issuedAt = LocalDateTime.of(2024, 12, 30, 0, 0, 0, 0);
 
-		CouponInventory couponInventory = createCouponInventory(1L, 10L);
-
-		Coupon coupon = createCoupon(couponInventory, LocalDateTime.of(2024, 12, 31, 0, 0, 0, 0));
+		Coupon coupon = createCoupon(LocalDateTime.of(2024, 12, 31, 0, 0, 0, 0));
 
 		// when
 		boolean result = coupon.isIssuable(issuedAt);

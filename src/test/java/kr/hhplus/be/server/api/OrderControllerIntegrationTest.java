@@ -2,7 +2,6 @@ package kr.hhplus.be.server.api;
 
 import static kr.hhplus.be.server.config.TestUtil.createTestBalance;
 import static kr.hhplus.be.server.config.TestUtil.createTestCoupon;
-import static kr.hhplus.be.server.config.TestUtil.createTestCouponInventory;
 import static kr.hhplus.be.server.config.TestUtil.createTestUser;
 import static kr.hhplus.be.server.config.TestUtil.createTestUserCoupon;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,6 +11,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.redisson.api.RAtomicLong;
 import org.springframework.http.HttpStatus;
 
 import io.restassured.RestAssured;
@@ -86,7 +86,7 @@ class OrderControllerIntegrationTest extends IntegrationTest {
 		Coupon savedCoupon = couponJpaRepository.save(createTestCoupon(LocalDateTime.now().plusDays(1L)));
 		UserCoupon userCoupon = userCouponJpaRepository.save(
 			createTestUserCoupon(user.getUserId(), savedCoupon.getCouponId()));
-		couponInventoryJpaRepository.save(createTestCouponInventory(savedCoupon.getCouponId(), 30L));
+		RAtomicLong couponCounter = TestUtil.addAndGetCouponCount(redissonClient, savedCoupon.getCouponId(), 30L);
 		balanceJpaRepository.save(createTestBalance(user.getUserId(), 50000L));
 		Product product1 = productJpaRepository.save(TestUtil.createTestProduct("상품1", 10000L));
 		Product product2 = productJpaRepository.save(TestUtil.createTestProduct("상품2", 10000L));

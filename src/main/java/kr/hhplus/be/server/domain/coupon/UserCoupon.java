@@ -65,4 +65,15 @@ public class UserCoupon extends BaseEntity {
 		return Math.max(totalPrice - this.amount, 0);
 	}
 
+	public static UserCoupon fromCoupon(Coupon coupon, long userId, LocalDateTime issuedAt) {
+		return UserCoupon.builder()
+			.couponId(coupon.getCouponId())
+			.userId(userId)
+			.amount(coupon.getAmount())
+			.expiredAt(coupon.getExpiredAt())
+			.status(UserCouponStatus.AVAILABLE)
+			.issuedAt(issuedAt)
+			.build();
+	}
+
 }

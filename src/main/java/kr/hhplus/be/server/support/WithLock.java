@@ -9,6 +9,4 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface WithLock {
 	String key() default "";
-
-	String keys() default "";
 }

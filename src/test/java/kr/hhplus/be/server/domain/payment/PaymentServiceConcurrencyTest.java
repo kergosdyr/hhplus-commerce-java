@@ -7,7 +7,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.TestPropertySource;
 
 import kr.hhplus.be.server.config.ConcurrencyTestUtil;
 import kr.hhplus.be.server.config.IntegrationTest;
@@ -16,12 +15,11 @@ import kr.hhplus.be.server.domain.balanace.Balance;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.user.User;
 
-@TestPropertySource(properties = {"spring.profiles.active=test,redisson"})
-class PaymentProcessorConcurrencyRedissonTest extends IntegrationTest {
+class PaymentServiceConcurrencyTest extends IntegrationTest {
 
 	@Test
 	@DisplayName("유저의 balance가 15000원이고 15000원 결제를 5번 동시 요청 시도할 경우 1번만 성공해야 한다.")
-	void shouldProcessOnlyFourPaymentsWhen40ConcurrentRequestsAreMade() throws InterruptedException {
+	void shouldPayOnlyFourPaymentsWhen40ConcurrentRequestsAreMade() throws InterruptedException {
 		// given
 		User user = createTestUser();
 		User savedUser = userJpaRepository.save(user);
@@ -34,7 +32,7 @@ class PaymentProcessorConcurrencyRedissonTest extends IntegrationTest {
 		int numberOfRequests = 5;
 		var run = ConcurrencyTestUtil.run(numberOfRequests, () -> {
 			try {
-				paymentProcessor.process(savedUser.getUserId(), mockOrder.getOrderId());
+				paymentService.pay(savedUser.getUserId(), mockOrder.getOrderId());
 
 				return true;
 			} catch (Exception e) {

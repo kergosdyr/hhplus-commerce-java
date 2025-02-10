@@ -25,7 +25,7 @@ import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderReader;
 
 @ExtendWith(MockitoExtension.class)
-class PaymentProcessorTest {
+class PaymentServiceTest {
 
 	@Mock
 	private BalanceModifier balanceModifier;
@@ -53,14 +53,14 @@ class PaymentProcessorTest {
 
 
 	@InjectMocks
-	private PaymentProcessor paymentProcessor;
+	private PaymentService paymentService;
 
 	@Mock
 	private OrderReader orderReader;
 
 	@Test
 	@DisplayName("process() 호출 시 쿠폰 없이 결제를 진행하고, Payment를 저장 후 반환한다.")
-	void shouldProcessPaymentWithoutCoupon() {
+	void shouldPayPaymentWithoutCoupon() {
 		// given
 		long userId = 1L;
 		long orderId = 10L;
@@ -81,7 +81,7 @@ class PaymentProcessorTest {
 		when(orderReader.read(orderId)).thenReturn(mockOrder);
 
 		// when
-		var result = paymentProcessor.process(userId, mockOrder.getOrderId());
+		var result = paymentService.pay(userId, mockOrder.getOrderId());
 
 		// then
 		verify(balanceModifier, times(1)).use(userId, totalPrice);
@@ -98,7 +98,7 @@ class PaymentProcessorTest {
 
 	@Test
 	@DisplayName("processWithCoupon() 호출 시, UserCoupon을 로딩 후 쿠폰 사용 금액만큼 Balance를 차감하고 Payment를 반환한다.")
-	void shouldProcessPaymentWithCoupon() {
+	void shouldPayPaymentWithCoupon() {
 		// given
 		long userId = 2L;
 		long couponId = 100L;
@@ -123,7 +123,7 @@ class PaymentProcessorTest {
 		when(orderReader.read(orderId)).thenReturn(mockOrder);
 
 		// when
-		var result = paymentProcessor.processWithCoupon(userId, couponId, mockOrder.getOrderId());
+		var result = paymentService.payWithCoupon(userId, couponId, mockOrder.getOrderId());
 
 		verify(balanceModifier, times(1)).use(userId, couponAppliedPrice);
 

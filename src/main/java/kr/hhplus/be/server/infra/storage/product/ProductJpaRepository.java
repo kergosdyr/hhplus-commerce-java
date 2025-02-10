@@ -16,10 +16,10 @@ public interface ProductJpaRepository extends JpaRepository<Product, Long>, Prod
 	List<Product> findAllWithoutCount(Pageable pageable);
 
 	@EntityGraph(attributePaths = {"productStock"})
-	@Query("select p from Product p where upper(p.name) like upper(?1)")
+	@Query("select p from Product p where upper(p.name) like upper(concat('%', ?1, '%'))")
 	List<Product> findAllByKeywordWithoutCount(String name, Pageable pageable);
 
-	@Query("select count(p) from Product p where upper(p.name) like upper(?1)")
+	@Query("select count(p) from Product p where upper(p.name) like upper(concat('%', ?1, '%'))")
 	long countAllByKeyword(String name);
 
 }

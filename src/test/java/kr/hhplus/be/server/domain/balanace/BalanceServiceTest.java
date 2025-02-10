@@ -28,7 +28,7 @@ class BalanceServiceTest {
 	BalanceModifier balanceModifier;
 
 	@Mock
-	BalanceFinder balanceFinder;
+	BalanceReader balanceReader;
 
 	@InjectMocks
 	BalanceService balanceService;
@@ -103,11 +103,11 @@ class BalanceServiceTest {
 
 		when(userFinder.notExistsByUserId(userId)).thenReturn(false);
 
-		given(balanceFinder.findByUserId(userId)).willReturn(givenBalance);
+		given(balanceReader.readByUserId(userId)).willReturn(givenBalance);
 
 		// when
 		assertThat(balanceService.get(userId)).isEqualTo(givenBalance);
-		verify(balanceFinder, times(1)).findByUserId(userId);
+		verify(balanceReader, times(1)).readByUserId(userId);
 	}
 
 

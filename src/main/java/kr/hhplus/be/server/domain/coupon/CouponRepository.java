@@ -7,4 +7,6 @@ import org.springframework.stereotype.Component;
 @Component
 public interface CouponRepository {
 	Optional<Coupon> findById(long couponId);
+
+	void issue(long couponId);
 }
