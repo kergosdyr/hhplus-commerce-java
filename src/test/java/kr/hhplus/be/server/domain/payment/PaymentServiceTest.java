@@ -14,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kr.hhplus.be.server.domain.analytics.AnalyticData;
 import kr.hhplus.be.server.domain.analytics.AnalyticsSender;
 import kr.hhplus.be.server.domain.analytics.AnalyticsService;
 import kr.hhplus.be.server.domain.balanace.BalanceModifier;
@@ -44,6 +43,9 @@ class PaymentServiceTest {
 
 	@Mock
 	private AnalyticsService analyticsService;
+
+	@Mock
+	private PaymentEventPublisher paymentEventPublisher;
 
 	@Mock
 	private AnalyticsSender analyticsSender;
@@ -77,7 +79,6 @@ class PaymentServiceTest {
 			.build();
 
 		when(paymentRepository.save(any(Payment.class))).thenReturn(savedPayment);
-		when(analyticsSender.send(any(AnalyticData.class))).thenReturn(true);
 		when(orderReader.read(orderId)).thenReturn(mockOrder);
 
 		// when
@@ -118,7 +119,6 @@ class PaymentServiceTest {
 			.build();
 
 		when(paymentRepository.save(any(Payment.class))).thenReturn(savedPayment);
-		when(analyticsSender.send(any(AnalyticData.class))).thenReturn(true);
 		when(couponApplier.apply(any(Long.class), any(Long.class), any(Long.class))).thenReturn(couponAppliedPrice);
 		when(orderReader.read(orderId)).thenReturn(mockOrder);
 

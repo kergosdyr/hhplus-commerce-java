@@ -25,7 +25,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import kr.hhplus.be.server.domain.analytics.AnalyticsSender;
 import kr.hhplus.be.server.domain.balanace.BalanceModifier;
 import kr.hhplus.be.server.domain.balanace.BalanceReader;
 import kr.hhplus.be.server.domain.coupon.CouponApplier;
@@ -36,6 +35,7 @@ import kr.hhplus.be.server.domain.coupon.UserCouponValidator;
 import kr.hhplus.be.server.domain.order.OrderCommand;
 import kr.hhplus.be.server.domain.order.OrderReader;
 import kr.hhplus.be.server.domain.payment.Payment;
+import kr.hhplus.be.server.domain.payment.PaymentEventPublisher;
 import kr.hhplus.be.server.domain.payment.PaymentRepository;
 import kr.hhplus.be.server.domain.payment.PaymentService;
 import kr.hhplus.be.server.domain.product.ProductStockModifier;
@@ -279,7 +279,7 @@ class WithLockAspectTest {
 			Mockito.mock(BalanceModifier.class),
 			paymentRepository,
 			orderReader,
-			Mockito.mock(AnalyticsSender.class),
+			Mockito.mock(PaymentEventPublisher.class),
 			couponApplier
 		);
 	}
