@@ -3,8 +3,6 @@ package kr.hhplus.be.server.domain.payment;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.hhplus.be.server.domain.analytics.AnalyticData;
-import kr.hhplus.be.server.domain.analytics.AnalyticsSender;
 import kr.hhplus.be.server.domain.balanace.BalanceModifier;
 import kr.hhplus.be.server.domain.coupon.CouponApplier;
 import kr.hhplus.be.server.domain.order.Order;
@@ -22,7 +20,7 @@ public class PaymentService {
 
 	private final OrderReader orderReader;
 
-	private final AnalyticsSender analyticsSender;
+	private final PaymentEventPublisher paymentEventPublisher;
 
 	private final CouponApplier couponApplier;
 
@@ -42,7 +40,7 @@ public class PaymentService {
 			.build();
 
 		Payment savedPayment = paymentRepository.save(payment);
-		analyticsSender.send(new AnalyticData(savedPayment.getPaymentId(), orderId, order.getCreatedAt()));
+		paymentEventPublisher.success(new PaymentSuccess(savedPayment.getPaymentId(), orderId, order.getCreatedAt()));
 		return new PaymentOutput(savedPayment, order);
 
 	}
@@ -65,7 +63,7 @@ public class PaymentService {
 			.build();
 
 		Payment savedPayment = paymentRepository.save(payment);
-		analyticsSender.send(new AnalyticData(savedPayment.getPaymentId(), order.getOrderId(), order.getCreatedAt()));
+		paymentEventPublisher.success(new PaymentSuccess(savedPayment.getPaymentId(), orderId, order.getCreatedAt()));
 		return new PaymentOutput(savedPayment, order);
 
 	}
