@@ -1,10 +1,9 @@
 package kr.hhplus.be.server.domain.analytics;
 
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.event.TransactionPhase;
-import org.springframework.transaction.event.TransactionalEventListener;
 
-import kr.hhplus.be.server.domain.payment.PaymentSuccess;
+import kr.hhplus.be.server.domain.payment.PaymentSuccessEvent;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -13,10 +12,12 @@ public class AnalyticsServiceListener {
 
 	private final AnalyticsSender analyticsSender;
 
-	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-	public void whenPaymentSuccess(PaymentSuccess paymentSuccess) {
+	@KafkaListener(id = "myId", topics = "paymentSuccess")
+	public void whenPaymentSuccess(PaymentSuccessEvent paymentSuccessEvent) {
+
 		analyticsSender.send(
-			new AnalyticData(paymentSuccess.paymentId(), paymentSuccess.orderId(), paymentSuccess.orderCreatedAt())
+			new AnalyticData(paymentSuccessEvent.paymentId(), paymentSuccessEvent.orderId(),
+				paymentSuccessEvent.orderCreatedAt())
 		);
 	}
 }
