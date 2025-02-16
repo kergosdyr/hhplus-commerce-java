@@ -11,7 +11,7 @@ public class PaymentEventPublisher {
 
 	private final ApplicationEventPublisher applicationEventPublisher;
 
-	public void success(PaymentSuccess paymentSuccess) {
-		applicationEventPublisher.publishEvent(paymentSuccess);
+	public void success(PaymentSuccessEvent paymentSuccessEvent) {
+		applicationEventPublisher.publishEvent(paymentSuccessEvent);
 	}
 }

@@ -14,7 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kr.hhplus.be.server.domain.payment.PaymentSuccess;
+import kr.hhplus.be.server.domain.payment.PaymentSuccessEvent;
 
 @ExtendWith(MockitoExtension.class)
 class AnalyticsServiceListenerTest {
@@ -29,7 +29,7 @@ class AnalyticsServiceListenerTest {
 	@DisplayName("AnalyticsServiceListener의 success 를 호출하면 send 를 호출한다")
 	void shouldAnalyticsServiceListenerSuccessThenCallSend() {
 		//given
-		PaymentSuccess paymentSuccess = new PaymentSuccess(
+		PaymentSuccessEvent paymentSuccessEvent = new PaymentSuccessEvent(
 			1L, 1L, LocalDateTime.of(2025, 1, 1, 0, 0, 0, 0)
 		);
 
@@ -37,11 +37,12 @@ class AnalyticsServiceListenerTest {
 			.thenReturn(true);
 
 		//when
-		analyticsServiceListener.whenPaymentSuccess(paymentSuccess);
+		analyticsServiceListener.whenPaymentSuccess(paymentSuccessEvent);
 
 		//then
 		verify(analyticsSender, times(1)).send(
-			new AnalyticData(paymentSuccess.paymentId(), paymentSuccess.orderId(), paymentSuccess.orderCreatedAt()));
+			new AnalyticData(paymentSuccessEvent.paymentId(), paymentSuccessEvent.orderId(),
+				paymentSuccessEvent.orderCreatedAt()));
 	}
 
 }
