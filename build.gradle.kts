@@ -37,6 +37,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 	implementation("org.redisson:redisson-spring-boot-starter:3.43.0")
+	implementation("org.springframework.kafka:spring-kafka")
 
 
 	implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.10.0")
@@ -62,7 +63,7 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:mysql")
-    testImplementation("io.rest-assured:rest-assured:5.3.0")
+	testImplementation("io.rest-assured:rest-assured:5.3.0")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

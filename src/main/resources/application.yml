@@ -22,6 +22,9 @@ spring:
       hibernate.dialect: org.hibernate.dialect.MySQLDialect
       hibernate.timezone.default_storage: NORMALIZE_UTC
       hibernate.jdbc.time_zone: UTC
+
+  kafka:
+    bootstrap-servers: localhost:9094
 decorator:
   datasource:
     enabled: true
