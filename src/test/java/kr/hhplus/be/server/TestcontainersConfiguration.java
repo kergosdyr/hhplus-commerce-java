@@ -58,7 +58,7 @@ class TestcontainersConfiguration {
 			.withEnv("KAFKA_CFG_CONTROLLER_QUORUM_VOTERS", "0@kafka:9093")
 			.withEnv("KAFKA_CFG_CONTROLLER_LISTENER_NAMES", "CONTROLLER")
 			.withEnv("KAFKA_CREATE_TOPICS", "topic1:1:1")
-			.waitingFor(Wait.forLogMessage(".*Starting Kafka.*\\n", 1));
+			.waitingFor(Wait.forLogMessage(".*Kafka Server started.*\\n", 1));
 
 		KAFKA_CONTAINER.setPortBindings(List.of("9094:9094"));
 

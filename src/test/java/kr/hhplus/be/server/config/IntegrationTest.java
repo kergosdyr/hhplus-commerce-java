@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationContext;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,6 +25,7 @@ import kr.hhplus.be.server.domain.payment.PaymentService;
 import kr.hhplus.be.server.domain.product.ProductFinder;
 import kr.hhplus.be.server.domain.product.ProductService;
 import kr.hhplus.be.server.domain.product.ProductStockModifier;
+import kr.hhplus.be.server.infra.kafka.analytics.AnalyticsServiceListener;
 import kr.hhplus.be.server.infra.storage.balance.BalanceJpaRepository;
 import kr.hhplus.be.server.infra.storage.coupon.CouponJpaRepository;
 import kr.hhplus.be.server.infra.storage.coupon.UserCouponJpaRepository;
@@ -36,6 +38,11 @@ import kr.hhplus.be.server.infra.storage.product.ProductStockJpaRepository;
 import kr.hhplus.be.server.infra.storage.user.UserJpaRepository;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(
+	properties = {
+		"spring.kafka.consumer.auto-offset-reset=earliest",
+	}
+)
 public class IntegrationTest {
 
 	@Autowired
@@ -118,6 +125,10 @@ public class IntegrationTest {
 
 	@MockitoSpyBean
 	protected ProductFinder productFinder;
+
+	@MockitoSpyBean
+	protected AnalyticsServiceListener analyticsServiceListener;
+
 
 	@Autowired
 	protected CacheManager redissonCacheManager;
