@@ -14,7 +14,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kr.hhplus.be.server.domain.payment.PaymentSuccessEvent;
+import kr.hhplus.be.server.infra.kafka.analytics.AnalyticsServiceListener;
+import kr.hhplus.be.server.infra.kafka.payment.PaymentSuccessEventPayload;
 
 @ExtendWith(MockitoExtension.class)
 class AnalyticsServiceListenerTest {
@@ -29,7 +30,7 @@ class AnalyticsServiceListenerTest {
 	@DisplayName("AnalyticsServiceListener의 success 를 호출하면 send 를 호출한다")
 	void shouldAnalyticsServiceListenerSuccessThenCallSend() {
 		//given
-		PaymentSuccessEvent paymentSuccessEvent = new PaymentSuccessEvent(
+		var paymentSuccessEvent = new PaymentSuccessEventPayload(
 			1L, 1L, LocalDateTime.of(2025, 1, 1, 0, 0, 0, 0)
 		);
 
