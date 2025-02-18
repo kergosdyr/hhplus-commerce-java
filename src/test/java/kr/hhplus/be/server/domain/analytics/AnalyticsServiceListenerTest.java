@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kr.hhplus.be.server.infra.clients.analytics.AnalyticsClientImpl;
 import kr.hhplus.be.server.infra.kafka.analytics.AnalyticsServiceListener;
 import kr.hhplus.be.server.infra.kafka.payment.PaymentSuccessEventPayload;
 
@@ -21,7 +22,7 @@ import kr.hhplus.be.server.infra.kafka.payment.PaymentSuccessEventPayload;
 class AnalyticsServiceListenerTest {
 
 	@Mock
-	private AnalyticsSender analyticsSender;
+	private AnalyticsClientImpl analyticsClient;
 
 	@InjectMocks
 	private AnalyticsServiceListener analyticsServiceListener;
@@ -34,14 +35,14 @@ class AnalyticsServiceListenerTest {
 			1L, 1L, LocalDateTime.of(2025, 1, 1, 0, 0, 0, 0)
 		);
 
-		when(analyticsSender.send(any()))
+		when(analyticsClient.send(any()))
 			.thenReturn(true);
 
 		//when
 		analyticsServiceListener.whenPaymentSuccess(paymentSuccessEvent);
 
 		//then
-		verify(analyticsSender, times(1)).send(
+		verify(analyticsClient, times(1)).send(
 			new AnalyticData(paymentSuccessEvent.paymentId(), paymentSuccessEvent.orderId(),
 				paymentSuccessEvent.orderCreatedAt()));
 	}
