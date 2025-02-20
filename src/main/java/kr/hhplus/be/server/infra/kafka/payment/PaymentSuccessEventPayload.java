@@ -1,10 +1,11 @@
-package kr.hhplus.be.server.domain.payment;
+package kr.hhplus.be.server.infra.kafka.payment;
 
 import java.time.LocalDateTime;
 
-public record PaymentSuccess(
+public record PaymentSuccessEventPayload(
 	long orderId,
 	long paymentId,
 	LocalDateTime orderCreatedAt
+
 ) {
 }

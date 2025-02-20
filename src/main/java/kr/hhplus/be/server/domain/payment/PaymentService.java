@@ -40,7 +40,8 @@ public class PaymentService {
 			.build();
 
 		Payment savedPayment = paymentRepository.save(payment);
-		paymentEventPublisher.success(new PaymentSuccess(savedPayment.getPaymentId(), orderId, order.getCreatedAt()));
+		paymentEventPublisher.success(
+			new PaymentSuccessEvent(savedPayment.getPaymentId(), orderId, order.getCreatedAt()));
 		return new PaymentOutput(savedPayment, order);
 
 	}
@@ -63,7 +64,8 @@ public class PaymentService {
 			.build();
 
 		Payment savedPayment = paymentRepository.save(payment);
-		paymentEventPublisher.success(new PaymentSuccess(savedPayment.getPaymentId(), orderId, order.getCreatedAt()));
+		paymentEventPublisher.success(
+			new PaymentSuccessEvent(savedPayment.getPaymentId(), orderId, order.getCreatedAt()));
 		return new PaymentOutput(savedPayment, order);
 
 	}
