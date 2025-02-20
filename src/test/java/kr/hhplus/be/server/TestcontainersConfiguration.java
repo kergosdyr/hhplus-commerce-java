@@ -1,10 +1,12 @@
 package kr.hhplus.be.server;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.Container;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.Network;
@@ -57,15 +59,41 @@ class TestcontainersConfiguration {
 				"CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT")
 			.withEnv("KAFKA_CFG_CONTROLLER_QUORUM_VOTERS", "0@kafka:9093")
 			.withEnv("KAFKA_CFG_CONTROLLER_LISTENER_NAMES", "CONTROLLER")
-			.withEnv("KAFKA_CREATE_TOPICS", "topic1:1:1")
 			.waitingFor(Wait.forLogMessage(".*Kafka Server started.*\\n", 1));
 
 		KAFKA_CONTAINER.setPortBindings(List.of("9094:9094"));
 
 		KAFKA_CONTAINER.start();
 
+		createTopic(KAFKA_CONTAINER, "topic1", 1, 1);
+		createTopic(KAFKA_CONTAINER, "paymentSuccess", 1, 1);
 
 	}
+
+	private static void createTopic(GenericContainer<?> container, String topic, int partitions,
+		int replicationFactor) {
+		// kafka-topics.sh 스크립트를 통해 토픽 생성
+		Container.ExecResult result = null;
+		try {
+			result = container.execInContainer(
+				"/opt/bitnami/kafka/bin/kafka-topics.sh",
+				"--create",
+				"--if-not-exists",
+				"--topic", topic,
+				"--bootstrap-server", "localhost:9092",
+				"--partitions", String.valueOf(partitions),
+				"--replication-factor", String.valueOf(replicationFactor)
+			);
+		} catch (IOException | InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+		if (result.getExitCode() != 0) {
+			throw new RuntimeException("토픽 생성 실패 (" + topic + "): " + result.getStderr());
+		} else {
+			System.out.println("토픽 생성 성공: " + topic);
+		}
+	}
+
 
 	@DynamicPropertySource
 	static void registerRedisProperties(DynamicPropertyRegistry registry) {

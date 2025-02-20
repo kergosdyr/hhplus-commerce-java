@@ -22,10 +22,10 @@ import kr.hhplus.be.server.domain.coupon.UserCouponValidator;
 import kr.hhplus.be.server.domain.order.OrderGenerator;
 import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.payment.PaymentService;
+import kr.hhplus.be.server.domain.payment.PaymentSuccessEventScheduler;
 import kr.hhplus.be.server.domain.product.ProductFinder;
 import kr.hhplus.be.server.domain.product.ProductService;
 import kr.hhplus.be.server.domain.product.ProductStockModifier;
-import kr.hhplus.be.server.infra.kafka.analytics.AnalyticsServiceListener;
 import kr.hhplus.be.server.infra.storage.balance.BalanceJpaRepository;
 import kr.hhplus.be.server.infra.storage.coupon.CouponJpaRepository;
 import kr.hhplus.be.server.infra.storage.coupon.UserCouponJpaRepository;
@@ -33,9 +33,11 @@ import kr.hhplus.be.server.infra.storage.coupon.UserCouponRedissonRepository;
 import kr.hhplus.be.server.infra.storage.order.OrderDetailJpaRepository;
 import kr.hhplus.be.server.infra.storage.order.OrderJpaRepository;
 import kr.hhplus.be.server.infra.storage.payment.PaymentJpaRepository;
+import kr.hhplus.be.server.infra.storage.payment.PaymentSuccessEventRecordJpaRepository;
 import kr.hhplus.be.server.infra.storage.product.ProductJpaRepository;
 import kr.hhplus.be.server.infra.storage.product.ProductStockJpaRepository;
 import kr.hhplus.be.server.infra.storage.user.UserJpaRepository;
+import kr.hhplus.be.server.message.AnalyticsListener;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(
@@ -127,8 +129,13 @@ public class IntegrationTest {
 	protected ProductFinder productFinder;
 
 	@MockitoSpyBean
-	protected AnalyticsServiceListener analyticsServiceListener;
+	protected AnalyticsListener analyticsListener;
 
+	@Autowired
+	protected PaymentSuccessEventRecordJpaRepository paymentSuccessEventRecordJpaRepository;
+
+	@Autowired
+	protected PaymentSuccessEventScheduler paymentSuccessEventScheduler;
 
 	@Autowired
 	protected CacheManager redissonCacheManager;
@@ -149,6 +156,7 @@ public class IntegrationTest {
 		userCouponJpaRepository.deleteAllInBatch();
 		userJpaRepository.deleteAllInBatch();
 		productStockJpaRepository.deleteAllInBatch();
+		paymentSuccessEventRecordJpaRepository.deleteAllInBatch();
 		redissonClient.getKeys().flushall();
 	}
 
