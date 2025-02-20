@@ -26,15 +26,11 @@ spring:
   kafka:
     bootstrap-servers: localhost:9094
     consumer:
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring:
           json:
             trusted:
               packages: kr.hhplus.be.server.infra.kafka.**
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 decorator:
   datasource:
     enabled: true
