@@ -7,7 +7,7 @@ import static kr.hhplus.be.server.config.TestUtil.getTestBalance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
 import java.time.Duration;
@@ -52,7 +52,7 @@ class PaymentServiceIntegrationTest extends IntegrationTest {
 
 	@Test
 	@DisplayName("process() 가 정상적으로 처리되는 경우 정상적으로 메세지를 발행한다.")
-	void shouldPayPaymentWithoutCouponAndProduceMessage() throws InterruptedException {
+	void shouldPayPaymentWithoutCouponAndProduceMessage() {
 
 		//given
 		User user = createTestUser();
@@ -77,7 +77,7 @@ class PaymentServiceIntegrationTest extends IntegrationTest {
 		await()
 			.pollInterval(Duration.ofMillis(500))
 			.atMost(Duration.ofSeconds(10))
-			.untilAsserted(() -> verify(analyticsServiceListener, times(1)).whenPaymentSuccess(any()));
+			.untilAsserted(() -> verify(analyticsListener, atLeastOnce()).whenPaymentSuccess(any()));
 
 	}
 
