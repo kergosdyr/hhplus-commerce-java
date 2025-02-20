@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.infra.storage.payment;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
@@ -15,7 +16,7 @@ public class PaymentRepositoryImpl implements PaymentRepository {
 
 	private final PaymentJpaRepository paymentJpaRepository;
 
-	private final PaymentEventRecordJpaRepository paymentEventRecordJpaRepository;
+	private final PaymentSuccessEventRecordJpaRepository paymentSuccessEventRecordJpaRepository;
 
 	@Override
 	public Payment save(Payment payment) {
@@ -24,11 +25,16 @@ public class PaymentRepositoryImpl implements PaymentRepository {
 
 	@Override
 	public PaymentSuccessEventRecord savePaymentEvent(PaymentSuccessEventRecord paymentSuccessEventRecord) {
-		return paymentEventRecordJpaRepository.save(paymentSuccessEventRecord);
+		return paymentSuccessEventRecordJpaRepository.save(paymentSuccessEventRecord);
 	}
 
 	@Override
-	public List<PaymentSuccessEventRecord> findAllNotSentEvent() {
-		return paymentEventRecordJpaRepository.findAllByStatusReady();
+	public Optional<PaymentSuccessEventRecord> findByPaymentId(long paymentId) {
+		return paymentSuccessEventRecordJpaRepository.findByPaymentId(paymentId);
+	}
+
+	@Override
+	public List<PaymentSuccessEventRecord> findAllFailedRecord() {
+		return paymentSuccessEventRecordJpaRepository.findAllFailedRecord();
 	}
 }

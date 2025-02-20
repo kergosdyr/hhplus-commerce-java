@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -13,10 +14,18 @@ public class PaymentSuccessEventListener {
 
 	private final PaymentEventClient paymentEventClient;
 
+	private final PaymentSuccessEventRecodeModifier paymentSuccessEventRecodeModifier;
+
 	@Async
 	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+	@Transactional
 	public void sendMessageWhenPaymentSuccess(PaymentSuccessEvent paymentSuccessEvent) {
-		paymentEventClient.send(paymentSuccessEvent.toPayload());
+		try {
+			paymentEventClient.send(paymentSuccessEvent.toPayload());
+			paymentSuccessEventRecodeModifier.sending(paymentSuccessEvent.paymentId());
+		} catch (Exception e) {
+			paymentSuccessEventRecodeModifier.failed(paymentSuccessEvent.paymentId());
+		}
 	}
 
 }

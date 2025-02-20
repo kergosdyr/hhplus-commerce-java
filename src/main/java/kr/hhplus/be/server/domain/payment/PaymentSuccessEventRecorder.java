@@ -15,7 +15,6 @@ public class PaymentSuccessEventRecorder {
 	@TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
 	public void recordEventWhenPaymentSuccess(PaymentSuccessEvent paymentSuccessEvent) {
 		paymentRepository.savePaymentEvent(paymentSuccessEvent.toRecord());
-
 	}
 
 }

@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.domain.payment;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
@@ -11,7 +12,9 @@ public interface PaymentRepository {
 
 	PaymentSuccessEventRecord savePaymentEvent(PaymentSuccessEventRecord paymentSuccessEventRecord);
 
-	List<PaymentSuccessEventRecord> findAllNotSentEvent();
+	Optional<PaymentSuccessEventRecord> findByPaymentId(long paymentId);
+
+	List<PaymentSuccessEventRecord> findAllFailedRecord();
 
 
 }

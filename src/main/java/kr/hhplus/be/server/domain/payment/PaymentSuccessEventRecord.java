@@ -33,9 +33,6 @@ public class PaymentSuccessEventRecord extends BaseEntity {
 	@Column(nullable = false)
 	private long orderId;
 
-	@Column(nullable = false)
-	private long userId;
-
 	@Column
 	private LocalDateTime sentAt;
 
@@ -44,5 +41,18 @@ public class PaymentSuccessEventRecord extends BaseEntity {
 
 	@Column
 	private PaymentEventRecordStatus status;
+
+	public void success(LocalDateTime sentAt) {
+		this.status = PaymentEventRecordStatus.SENT;
+		this.sentAt = sentAt;
+	}
+
+	public void sending() {
+		this.status = PaymentEventRecordStatus.SENDING;
+	}
+
+	public void failed() {
+		this.status = PaymentEventRecordStatus.FAILED;
+	}
 
 }
