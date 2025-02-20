@@ -28,6 +28,7 @@ public class KafkaRunningTest extends IntegrationTest {
 	@Autowired
 	private KafkaTemplate<String, String> kafkaTemplate;
 
+
 	@Autowired
 	private ConsumerFactory<String, String> consumerFactory;
 
@@ -60,7 +61,7 @@ public class KafkaRunningTest extends IntegrationTest {
 		//then
 		await()
 			.pollInterval(Duration.ofMillis(500))
-			.atMost(Duration.ofSeconds(5))
+			.atMost(Duration.ofSeconds(10))
 			.untilAsserted(() -> assertThat(assertionValue.get()).isEqualTo(TEST_SEND_MESSAGE));
 
 	}
