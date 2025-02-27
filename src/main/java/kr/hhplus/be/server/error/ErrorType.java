@@ -20,6 +20,8 @@ public enum ErrorType {
 	PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorCode.E400, "해당하는 상품이 존재하지 않습니다", LogLevel.ERROR),
 	PRODUCT_NO_STOCK(HttpStatus.BAD_REQUEST, ErrorCode.E400, "해당 상품은 품절되었습니다", LogLevel.ERROR),
 	ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorCode.E400, "해당하는 주문이 존재하지 않습니다", LogLevel.ERROR),
+	PAYMENT_RECORDER_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorCode.E500, "해당하는 payment 의 record 가 존재하지 않습니다",
+		LogLevel.ERROR),
 	;
 
 	private final HttpStatus status;
