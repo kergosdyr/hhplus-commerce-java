@@ -36,6 +36,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+	implementation("io.micrometer:micrometer-registry-prometheus")
 	implementation("org.redisson:redisson-spring-boot-starter:3.43.0")
 	implementation("org.springframework.kafka:spring-kafka")
 
